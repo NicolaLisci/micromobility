@@ -1,0 +1,7 @@
+{
+  "name": "microMobility",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
