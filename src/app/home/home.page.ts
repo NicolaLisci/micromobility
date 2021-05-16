@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterContentInit, Component, OnInit } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { environment } from 'src/environments/environment';
+import { AlertController } from '@ionic/angular';
+import { MapService } from '../services/map.service';
 
 @Component({
   selector: 'app-home',
@@ -11,13 +13,16 @@ import { environment } from 'src/environments/environment';
 export class HomePage implements OnInit{
   
   constructor(
-    private geolocation: Geolocation
+    private geolocation: Geolocation,
+    private alertController: AlertController,
+    private mapService: MapService
     ) {}
     
+    
     map: mapboxgl.Map;
-    style = 'mapbox://styles/mapbox/streets-v11';
-    lat = 39.03437700146109;
-    lng = 8.999600913492351;
+    style = 'mapbox://styles/mapbox/light-v10';
+    // lat = 39.03437700146109;
+    // lng = 8.999600913492351;
     
     
     coordinates= {
@@ -32,12 +37,37 @@ export class HomePage implements OnInit{
         container: 'map',
         style: this.style,
         zoom: 15,
-        center: [this.lng, this.lat]
+        // center: [this.lng, this.lat]
       });
       
+      console.log(this.map);
+      this.map.on('load', ()=>{
+        this.map.addSource('iso', {
+          type: 'geojson',
+          data: {
+            'type': 'FeatureCollection',
+            'features': []
+          }
+        });
 
-      this.addUserLocation();
+        this.map.addLayer(
+          {
+            'id': 'isoLayer',
+            'type': 'fill',
+            'source': 'iso',
+            'layout': {},
+            'paint': {
+              'fill-color': '#5a3fc0',
+              'fill-opacity': 0.3
+            }
+          },
+          'poi-label'
+        );
+        
+      });
       
+      this.addUserLocation();
+      this.getUserLocation();
       
       
       //  [39.0355800, 9.0003961]
@@ -54,6 +84,49 @@ export class HomePage implements OnInit{
       // this.map.addControl(new mapboxgl.NavigationControl());
     }
     
+    getIsochrone(){
+      this.mapService.getIsochrone(this.coordinates, 10).subscribe((res)=>{
+        console.log(res);
+        this.map.getSource('iso').setData(res);
+      })
+    }
+    
+    onStartClick(){
+      this.presentAlertPrompt();
+    }
+    
+    async presentAlertPrompt() {
+      const alert = await this.alertController.create({
+        cssClass: 'my-custom-class',
+        header: 'Inserisci autonomia',
+        inputs: [
+          {
+            name: 'name1',
+            type: 'text',
+            placeholder: 'Km'
+          }
+        ],
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {
+              console.log('Confirm Cancel');
+            }
+          }, {
+            text: 'Ok',
+            handler: () => {
+              console.log('ok')
+              this.getIsochrone();
+            }
+          }
+        ]
+      });
+      
+      await alert.present();
+    }
+    
     addUserLocation(){
       this.map.addControl(
         new mapboxgl.GeolocateControl({
@@ -63,6 +136,22 @@ export class HomePage implements OnInit{
           trackUserLocation: true
         })
         );
+      }
+      
+      getUserLocation(){
+        this.geolocation.getCurrentPosition().then((resp) => {
+          this.coordinates.latitude = resp.coords.latitude;
+          this.coordinates.longitude = resp.coords.longitude
+        }).catch((error) => {
+          console.log('Error getting location', error);
+        });
+        
+        let watch = this.geolocation.watchPosition();
+        watch.subscribe((data:any) => {
+          this.coordinates.latitude = data.coords.latitude;
+          this.coordinates.longitude = data.coords.longitude;
+          console.log(this.coordinates)
+        });
       }
       
       addDeviceInMap(){
