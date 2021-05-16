@@ -17,9 +17,9 @@ import { WebBluetoothModule } from '@manekinekko/angular-web-bluetooth';
     IonicModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
-    WebBluetoothModule.forRoot({
-      enableTracing: true // or false, this will enable logs in the browser's console
-    })
+    // WebBluetoothModule.forRoot({
+    //   enableTracing: true // or false, this will enable logs in the browser's console
+    // })
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
