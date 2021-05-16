@@ -1,8 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Blank
+    <ion-title *ngIf="deviceName$ | async as deviceName else connect">
+      {{deviceName}}
     </ion-title>
+    <ng-template #connect>
+      <ion-title>
+        Connect your device
+      </ion-title>
+    </ng-template>
   </ion-toolbar>
 </ion-header>
 
@@ -16,9 +21,17 @@
   <div id="map-container">
     <div id="map"></div>
   </div>
+  
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="onStartClick()">
-      START
+    <ion-fab-button (click)="onStartClick()" color="success">
+      <ion-icon name="play-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+  
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-fab-button (click)="findDevice()">
+      <ion-icon name="bluetooth-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  
 </ion-content>

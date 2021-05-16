@@ -4,6 +4,8 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { environment } from 'src/environments/environment';
 import { AlertController } from '@ionic/angular';
 import { MapService } from '../services/map.service';
+import { BluetoothService } from '../services/bluetooth.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -11,11 +13,14 @@ import { MapService } from '../services/map.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit{
+
+  public deviceName$ = new Observable();
   
   constructor(
     private geolocation: Geolocation,
     private alertController: AlertController,
-    private mapService: MapService
+    private mapService: MapService,
+    private bluetoothService: BluetoothService
     ) {}
     
     
@@ -80,6 +85,11 @@ export class HomePage implements OnInit{
       
       onStartClick(){
         this.presentAlertPrompt();
+      }
+      
+      findDevice(){
+        this.bluetoothService.value();
+        this.deviceName$ = this.bluetoothService.deviceName$.asObservable();
       }
       
       async presentAlertPrompt() {
