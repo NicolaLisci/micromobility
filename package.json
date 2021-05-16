@@ -27,6 +27,7 @@
     "@mapbox/mapbox-gl-geocoder": "^4.7.0",
     "@types/web-bluetooth": "^0.0.9",
     "cordova-plugin-geolocation": "^4.1.0",
+    "mapbox-gl": "^1.13.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
