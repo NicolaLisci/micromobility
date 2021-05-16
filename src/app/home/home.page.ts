@@ -68,6 +68,9 @@ export class HomePage implements OnInit{
       
       this.addUserLocation();
       this.getUserLocation();
+
+      const kmPerMinute = 0.25;
+      const speed = 15;
       
       
       //  [39.0355800, 9.0003961]
@@ -84,8 +87,9 @@ export class HomePage implements OnInit{
       // this.map.addControl(new mapboxgl.NavigationControl());
     }
     
-    getIsochrone(){
-      this.mapService.getIsochrone(this.coordinates, 10).subscribe((res)=>{
+    getIsochrone(km){
+      let minutes = (km/2) / 0.25;
+      this.mapService.getIsochrone(this.coordinates, minutes).subscribe((res)=>{
         console.log(res);
         this.map.getSource('iso').setData(res);
       })
@@ -101,7 +105,7 @@ export class HomePage implements OnInit{
         header: 'Inserisci autonomia',
         inputs: [
           {
-            name: 'name1',
+            name: 'km',
             type: 'text',
             placeholder: 'Km'
           }
@@ -116,9 +120,9 @@ export class HomePage implements OnInit{
             }
           }, {
             text: 'Ok',
-            handler: () => {
-              console.log('ok')
-              this.getIsochrone();
+            handler: (data) => {
+              console.log(data)
+              this.getIsochrone(data.km);
             }
           }
         ]
