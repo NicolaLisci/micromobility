@@ -56,6 +56,7 @@ export class HomePage implements OnInit{
       this.getUserLocation();
       
       this.map.on('load', ()=>{
+        this.map.resize();
         this.map.addSource('iso', {
           type: 'geojson',
           data: {
