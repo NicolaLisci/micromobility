@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit{
-
+  
   public deviceName$ = new Observable();
   
   constructor(
@@ -37,6 +37,9 @@ export class HomePage implements OnInit{
     
     ngOnInit(): void {
       
+      if(!localStorage.getItem('coordinates')){
+        localStorage.setItem('coordinates', '{"latitude":0,"longitude":0}');
+      }
       const coordinates = JSON.parse(localStorage.getItem('coordinates'));
       
       mapboxgl.accessToken = environment.mapbox.accessToken;
@@ -44,7 +47,7 @@ export class HomePage implements OnInit{
         container: 'map',
         style: this.style,
         zoom: 15,
-        center: [coordinates.longitude,coordinates.latitude]
+        // center: [coordinates.longitude,coordinates.latitude]
       });
       
       this.addUserLocation();
