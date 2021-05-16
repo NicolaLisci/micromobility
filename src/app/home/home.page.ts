@@ -32,15 +32,19 @@ export class HomePage implements OnInit{
     
     ngOnInit(): void {
       
+      const coordinates = JSON.parse(localStorage.getItem('coordinates'));
+      
       mapboxgl.accessToken = environment.mapbox.accessToken;
       this.map = new mapboxgl.Map({
         container: 'map',
         style: this.style,
         zoom: 15,
-        // center: [this.lng, this.lat]
+        center: [coordinates.longitude,coordinates.latitude]
       });
       
-      console.log(this.map);
+      this.addUserLocation();
+      this.getUserLocation();
+      
       this.map.on('load', ()=>{
         this.map.addSource('iso', {
           type: 'geojson',
@@ -49,7 +53,7 @@ export class HomePage implements OnInit{
             'features': []
           }
         });
-
+        
         this.map.addLayer(
           {
             'id': 'isoLayer',
@@ -62,125 +66,106 @@ export class HomePage implements OnInit{
             }
           },
           'poi-label'
-        );
-        
-      });
+          );
+          
+        });
+      }
       
-      this.addUserLocation();
-      this.getUserLocation();
-
-      const kmPerMinute = 0.25;
-      const speed = 15;
-      
-      
-      //  [39.0355800, 9.0003961]
-      // var el = document.createElement('div');
-      // el.className = 'marker';
-      
-      // make a marker for each feature and add to the map
-      // new mapboxgl.Marker(el)
-      // .setLngLat([9.0003961, 39.0355800])
-      // .addTo(this.map);
-      
-      // this.addDeviceInMap();
-      
-      // this.map.addControl(new mapboxgl.NavigationControl());
-    }
-    
-    getIsochrone(km){
-      let minutes = (km/2) / 0.25;
-      this.mapService.getIsochrone(this.coordinates, minutes).subscribe((res)=>{
-        this.map.getSource('iso').setData(res);
-      })
-    }
-    
-    onStartClick(){
-      this.presentAlertPrompt();
-    }
-    
-    async presentAlertPrompt() {
-      const alert = await this.alertController.create({
-        cssClass: 'my-custom-class',
-        header: 'Inserisci autonomia',
-        inputs: [
-          {
-            name: 'km',
-            type: 'text',
-            placeholder: 'Km'
-          }
-        ],
-        buttons: [
-          {
-            text: 'Cancel',
-            role: 'cancel',
-            cssClass: 'secondary',
-            handler: () => {
-              console.log('Confirm Cancel');
-            }
-          }, {
-            text: 'Ok',
-            handler: (data) => {
-              this.getIsochrone(data.km);
-            }
-          }
-        ]
-      });
-      
-      await alert.present();
-    }
-    
-    addUserLocation(){
-      this.map.addControl(
-        new mapboxgl.GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true
-          },
-          trackUserLocation: true
+      getIsochrone(km){
+        let minutes = (km/2) / 0.25;
+        this.mapService.getIsochrone(this.coordinates, minutes).subscribe((res)=>{
+          this.map.getSource('iso').setData(res);
         })
-        );
       }
       
-      getUserLocation(){
-        this.geolocation.getCurrentPosition().then((resp) => {
-          this.coordinates.latitude = resp.coords.latitude;
-          this.coordinates.longitude = resp.coords.longitude
-        }).catch((error) => {
-          console.log('Error getting location', error);
-        });
-        
-        let watch = this.geolocation.watchPosition();
-        watch.subscribe((data:any) => {
-          this.coordinates.latitude = data.coords.latitude;
-          this.coordinates.longitude = data.coords.longitude;
-        });
+      onStartClick(){
+        this.presentAlertPrompt();
       }
       
-      addDeviceInMap(){
-        this.geolocation.getCurrentPosition().then((resp) => {
-          this.coordinates.latitude = resp.coords.latitude;
-          this.coordinates.longitude = resp.coords.longitude
-        }).catch((error) => {
-          console.log('Error getting location', error);
+      async presentAlertPrompt() {
+        const alert = await this.alertController.create({
+          cssClass: 'my-custom-class',
+          header: 'Inserisci autonomia',
+          inputs: [
+            {
+              name: 'km',
+              type: 'text',
+              placeholder: 'Km'
+            }
+          ],
+          buttons: [
+            {
+              text: 'Cancel',
+              role: 'cancel',
+              cssClass: 'secondary',
+              handler: () => {
+                console.log('Confirm Cancel');
+              }
+            }, {
+              text: 'Ok',
+              handler: (data) => {
+                this.getIsochrone(data.km);
+              }
+            }
+          ]
         });
         
-        let watch = this.geolocation.watchPosition();
-        watch.subscribe((data:any) => {
-          this.coordinates.latitude = data.coords.latitude;
-          this.coordinates.longitude = data.coords.longitude;
+        await alert.present();
+      }
+      
+      addUserLocation(){
+        this.map.addControl(
+          new mapboxgl.GeolocateControl({
+            positionOptions: {
+              enableHighAccuracy: true
+            },
+            trackUserLocation: true
+          })
+          );
+        }
+        
+        getUserLocation(){
+          this.geolocation.getCurrentPosition().then((resp) => {
+            this.coordinates.latitude = resp.coords.latitude;
+            this.coordinates.longitude = resp.coords.longitude
+          }).catch((error) => {
+            console.log('Error getting location', error);
+          });
           
-          var el = document.createElement('div');
-          el.className = 'bluetooth';
+          let watch = this.geolocation.watchPosition();
+          watch.subscribe((data:any) => {
+            this.coordinates.latitude = data.coords.latitude;
+            this.coordinates.longitude = data.coords.longitude;
+            localStorage.setItem('coordinates',JSON.stringify(this.coordinates));
+          });
+        }
+        
+        addDeviceInMap(){
+          this.geolocation.getCurrentPosition().then((resp) => {
+            this.coordinates.latitude = resp.coords.latitude;
+            this.coordinates.longitude = resp.coords.longitude
+          }).catch((error) => {
+            console.log('Error getting location', error);
+          });
           
-          // make a marker for each feature and add to the map
-          new mapboxgl.Marker(el)
-          .setLngLat([this.coordinates.longitude, this.coordinates.latitude])
-          .addTo(this.map);
-        });
+          let watch = this.geolocation.watchPosition();
+          watch.subscribe((data:any) => {
+            this.coordinates.latitude = data.coords.latitude;
+            this.coordinates.longitude = data.coords.longitude;
+            
+            var el = document.createElement('div');
+            el.className = 'bluetooth';
+            
+            // make a marker for each feature and add to the map
+            new mapboxgl.Marker(el)
+            .setLngLat([this.coordinates.longitude, this.coordinates.latitude])
+            .addTo(this.map);
+          });
+          
+          
+        }
+        
         
         
       }
       
-      
-      
-    }
-    
