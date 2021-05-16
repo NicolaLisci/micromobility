@@ -5,13 +5,15 @@
     </ion-title>
     <ng-template #connect>
       <ion-title>
-      MicroMobility
+        MicroMobility
       </ion-title>
+      
     </ng-template>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true"> 
+  <div id="geocoder" class="geocoder"></div>
   <div id="map-container">
     <div id="map"></div>
   </div>

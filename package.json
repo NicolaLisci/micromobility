@@ -24,9 +24,9 @@
     "@ionic-native/geolocation": "^5.33.0",
     "@ionic/angular": "^5.5.2",
     "@manekinekko/angular-web-bluetooth": "^11.2.2",
+    "@mapbox/mapbox-gl-geocoder": "^4.7.0",
     "@types/web-bluetooth": "^0.0.9",
     "cordova-plugin-geolocation": "^4.1.0",
-    "mapbox-gl": "^2.2.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

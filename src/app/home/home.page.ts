@@ -6,6 +6,8 @@ import { AlertController } from '@ionic/angular';
 import { MapService } from '../services/map.service';
 import { BluetoothService } from '../services/bluetooth.service';
 import { Observable } from 'rxjs';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 @Component({
   selector: 'app-home',
@@ -62,6 +64,22 @@ export class HomePage implements OnInit{
           }
         });
         
+        let geocoder = new MapboxGeocoder({
+          // Initialize the geocoder
+          accessToken: mapboxgl.accessToken, // Set the access token
+          mapboxgl: mapboxgl, // Set the mapbox-gl instance
+          marker: false, // Do not use the default marker style
+          placeholder: 'Search', // Placeholder text for the search bar
+          proximity: {
+            longitude: coordinates.longitude,
+            latitude: coordinates.latitude
+          } // Coordinates of UC Berkeley
+        });
+        
+        document.getElementById('geocoder').appendChild(geocoder.onAdd(this.map));
+        
+        // this.map.addControl(geocoder);
+        
         this.map.addLayer(
           {
             'id': 'isoLayer',
@@ -69,7 +87,7 @@ export class HomePage implements OnInit{
             'source': 'iso',
             'layout': {},
             'paint': {
-              'fill-color': '#5a3fc0',
+              'fill-color': '#005a32',
               'fill-opacity': 0.3
             }
           },
