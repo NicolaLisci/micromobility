@@ -27,7 +27,7 @@ export class HomePage implements OnInit{
     
     
     map: mapboxgl.Map;
-    style = 'mapbox://styles/mapbox/light-v10';
+    style = 'mapbox://styles/mapbox/dark-v10';
     // lat = 39.03437700146109;
     // lng = 8.999600913492351;
     
