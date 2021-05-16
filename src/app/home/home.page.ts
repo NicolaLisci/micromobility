@@ -90,7 +90,6 @@ export class HomePage implements OnInit{
     getIsochrone(km){
       let minutes = (km/2) / 0.25;
       this.mapService.getIsochrone(this.coordinates, minutes).subscribe((res)=>{
-        console.log(res);
         this.map.getSource('iso').setData(res);
       })
     }
@@ -121,7 +120,6 @@ export class HomePage implements OnInit{
           }, {
             text: 'Ok',
             handler: (data) => {
-              console.log(data)
               this.getIsochrone(data.km);
             }
           }
@@ -154,7 +152,6 @@ export class HomePage implements OnInit{
         watch.subscribe((data:any) => {
           this.coordinates.latitude = data.coords.latitude;
           this.coordinates.longitude = data.coords.longitude;
-          console.log(this.coordinates)
         });
       }
       
@@ -171,7 +168,6 @@ export class HomePage implements OnInit{
           this.coordinates.latitude = data.coords.latitude;
           this.coordinates.longitude = data.coords.longitude;
           
-          console.log(this.coordinates);
           var el = document.createElement('div');
           el.className = 'bluetooth';
           
