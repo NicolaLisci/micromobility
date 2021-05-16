@@ -1,5 +1,5 @@
 import { AfterContentInit, Component, OnInit } from '@angular/core';
-import * as mapboxgl from 'mapbox-gl';
+
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { environment } from 'src/environments/environment';
 import { AlertController } from '@ionic/angular';
@@ -8,7 +8,9 @@ import { BluetoothService } from '../services/bluetooth.service';
 import { Observable } from 'rxjs';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import * as mapboxgl from 'mapbox-gl';
 import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
+import { GeoJSONSource } from 'mapbox-gl';
 
 @Component({
   selector: 'app-home',
@@ -46,7 +48,7 @@ export class HomePage implements OnInit{
       }
       const coordinates = JSON.parse(localStorage.getItem('coordinates'));
       
-      mapboxgl.accessToken = environment.mapbox.accessToken;
+      (mapboxgl as any).accessToken = environment.mapbox.accessToken;
       this.map = new mapboxgl.Map({
         container: 'map',
         style: this.style,
@@ -285,8 +287,8 @@ export class HomePage implements OnInit{
       
       getIsochrone(km){
         let minutes = (km/2) / 0.25;
-        this.mapService.getIsochrone(this.coordinates, minutes).subscribe((res)=>{
-          this.map.getSource('iso').setData(res);
+        this.mapService.getIsochrone(this.coordinates, minutes).subscribe((res: any)=>{
+          (this.map.getSource('iso') as GeoJSONSource).setData(res);
         })
       }
       
