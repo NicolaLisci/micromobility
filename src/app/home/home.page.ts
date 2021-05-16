@@ -35,47 +35,63 @@ export class HomePage implements OnInit{
         center: [this.lng, this.lat]
       });
       
+
+      this.addUserLocation();
+      
+      
+      
       //  [39.0355800, 9.0003961]
-      var el = document.createElement('div');
-      el.className = 'marker';
+      // var el = document.createElement('div');
+      // el.className = 'marker';
       
       // make a marker for each feature and add to the map
-      new mapboxgl.Marker(el)
-      .setLngLat([9.0003961, 39.0355800])
-      .addTo(this.map);
+      // new mapboxgl.Marker(el)
+      // .setLngLat([9.0003961, 39.0355800])
+      // .addTo(this.map);
       
-      this.addDeviceInMap();
+      // this.addDeviceInMap();
       
-      this.map.addControl(new mapboxgl.NavigationControl());
+      // this.map.addControl(new mapboxgl.NavigationControl());
     }
     
-    addDeviceInMap(){
-      this.geolocation.getCurrentPosition().then((resp) => {
-        this.coordinates.latitude = resp.coords.latitude;
-        this.coordinates.longitude = resp.coords.longitude
-      }).catch((error) => {
-        console.log('Error getting location', error);
-      });
+    addUserLocation(){
+      this.map.addControl(
+        new mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true
+        })
+        );
+      }
       
-      let watch = this.geolocation.watchPosition();
-      watch.subscribe((data:any) => {
-        this.coordinates.latitude = data.coords.latitude;
-        this.coordinates.longitude = data.coords.longitude;
+      addDeviceInMap(){
+        this.geolocation.getCurrentPosition().then((resp) => {
+          this.coordinates.latitude = resp.coords.latitude;
+          this.coordinates.longitude = resp.coords.longitude
+        }).catch((error) => {
+          console.log('Error getting location', error);
+        });
         
-        console.log(this.coordinates);
-        var el = document.createElement('div');
-        el.className = 'bluetooth';
+        let watch = this.geolocation.watchPosition();
+        watch.subscribe((data:any) => {
+          this.coordinates.latitude = data.coords.latitude;
+          this.coordinates.longitude = data.coords.longitude;
+          
+          console.log(this.coordinates);
+          var el = document.createElement('div');
+          el.className = 'bluetooth';
+          
+          // make a marker for each feature and add to the map
+          new mapboxgl.Marker(el)
+          .setLngLat([this.coordinates.longitude, this.coordinates.latitude])
+          .addTo(this.map);
+        });
         
-        // make a marker for each feature and add to the map
-        new mapboxgl.Marker(el)
-        .setLngLat([this.coordinates.longitude, this.coordinates.latitude])
-        .addTo(this.map);
-      });
+        
+      }
+      
       
       
     }
     
-    
-    
-  }
-  
