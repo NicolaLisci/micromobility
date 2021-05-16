@@ -49,7 +49,7 @@ export class HomePage implements OnInit{
         container: 'map',
         style: this.style,
         zoom: 15,
-        // center: [coordinates.longitude,coordinates.latitude]
+        center: [coordinates.longitude,coordinates.latitude]
       });
       
       this.addUserLocation();
