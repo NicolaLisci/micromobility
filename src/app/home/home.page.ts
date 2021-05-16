@@ -20,7 +20,7 @@ export class HomePage implements OnInit{
     private geolocation: Geolocation,
     private alertController: AlertController,
     private mapService: MapService,
-    private bluetoothService: BluetoothService
+    // private bluetoothService: BluetoothService
     ) {}
     
     
@@ -91,8 +91,8 @@ export class HomePage implements OnInit{
       }
       
       findDevice(){
-        this.bluetoothService.value();
-        this.deviceName$ = this.bluetoothService.deviceName$.asObservable();
+        // this.bluetoothService.value();
+        // this.deviceName$ = this.bluetoothService.deviceName$.asObservable();
       }
       
       async presentAlertPrompt() {
