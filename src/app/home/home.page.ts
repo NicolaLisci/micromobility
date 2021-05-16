@@ -70,10 +70,10 @@ export class HomePage implements OnInit{
           mapboxgl: mapboxgl, // Set the mapbox-gl instance
           marker: true, // Do not use the default marker style
           placeholder: 'Search', // Placeholder text for the search bar
-          // proximity: {
-          //   longitude: coordinates.longitude,
-          //   latitude: coordinates.latitude
-          // } // Coordinates of UC Berkeley
+          proximity: {
+            longitude: coordinates.longitude,
+            latitude: coordinates.latitude
+          } // Coordinates of UC Berkeley
         });
         
         document.getElementById('geocoder').appendChild(geocoder.onAdd(this.map));
