@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, OnInit } from '@angular/core';
+import { AfterContentInit, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { environment } from 'src/environments/environment';
@@ -32,6 +32,10 @@ export class HomePage implements OnInit{
     map: mapboxgl.Map;
     draw: any;
     style = 'mapbox://styles/mapbox/dark-v10';
+    
+    coords;
+    tripDuration;
+    tripDirections = [];
     // lat = 39.03437700146109;
     // lng = 8.999600913492351;
     
@@ -53,6 +57,7 @@ export class HomePage implements OnInit{
         container: 'map',
         style: this.style,
         zoom: 15,
+        logoPosition: "bottom-left",
         center: [coordinates.longitude,coordinates.latitude]
       });
       
@@ -179,13 +184,12 @@ export class HomePage implements OnInit{
         // Add create, update, or delete actions
         this.map.on('draw.create',()=> this.updateRoute());
         this.map.on('draw.update',() => this.updateRoute());
-        // this.map.on('draw.delete', removeRoute);
+        this.map.on('draw.delete', () => this.removeRoute());
         
       }
       
       updateRoute() {
-        // removeRoute(); // Overwrite any existing layers
-        console.log(this.draw);
+        this.removeRoute(); // Overwrite any existing layers
         // Get the coordinates
         let data:any = this.draw.getAll();
         let lastFeature = data.features.length - 1;
@@ -207,11 +211,11 @@ export class HomePage implements OnInit{
         let radiuses = radius.join(';');
         // Create the query
         this.mapService.getMapDraw(coordinates, radiuses).subscribe((res:any)=>{
-          var coords = res.matchings[0].geometry;
+          this.coords = res.matchings[0].geometry;
           // Draw the route on the map
-          console.log(coords);
-          this.addRoute(coords);
-          // this.getInstructions(res.matchings[0]);
+          console.log(this.coords);
+          this.addRoute(this.coords);
+          this.getInstructions(res.matchings[0]);
         });
         
         // $.ajax({
@@ -255,28 +259,25 @@ export class HomePage implements OnInit{
         }
       }
       
-      // getInstructions(data) {
-      //   // Target the sidebar to add the instructions
-      //   var directions = document.getElementById('directions');
-      
-      //   var legs = data.legs;
-      //   var tripDirections = [];
-      //   // Output the instructions for each step of each leg in the response object
-      //   for (var i = 0; i < legs.length; i++) {
-      //     var steps = legs[i].steps;
-      //     for (var j = 0; j < steps.length; j++) {
-      //       tripDirections.push('<br><li>' + steps[j].maneuver.instruction) +
-      //       '</li>';
-      //     }
-      //   }
-      //   directions.innerHTML =
-      //   '<br><h2>Trip duration: ' +
-      //   Math.floor(data.duration / 60) +
-      //   ' min.</h2>' +
-      //   tripDirections;
-      // }
+      getInstructions(data) {
+        // Target the sidebar to add the instructions
+        let directions = document.getElementById('directions');
+        
+        let legs = data.legs;
+        this.tripDuration
+        // Output the instructions for each step of each leg in the response object
+        for (var i = 0; i < legs.length; i++) {
+          var steps = legs[i].steps;
+          for (var j = 0; j < steps.length; j++) {
+            this.tripDirections.push(steps[j].maneuver.instruction);
+          }
+        }
+
+        this.tripDuration = Math.floor(data.duration / 60);
+      }
       
       removeRoute() {
+        this.coords = undefined;
         if (this.map.getSource('route')) {
           this.map.removeLayer('route');
           this.map.removeSource('route');

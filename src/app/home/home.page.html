@@ -14,14 +14,21 @@
 
 <ion-content [fullscreen]="true"> 
   <div id="geocoder" class="geocoder"></div>
+  <div id="directions" class="card" *ngIf="coords">
+    <span class="font-semibold text-lg">{{tripDuration}}"</span>
+    <p *ngFor="let instr of tripDirections">{{instr}}</p>
+  </div>
     <div id="map"></div>
   
+
   
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="onStartClick()" color="primary">
       <ion-icon name="map-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+
+
   
   <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-fab-button (click)="findDevice()">
