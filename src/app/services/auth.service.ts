@@ -42,9 +42,18 @@ export class AuthService {
     return this.AuthLogin(new firebase.auth.GoogleAuthProvider());
   }
 
+  signInAnonymously() {
+    return this.afAuth.signInAnonymously()
+      .then((result) => {
+        this.SetUserData(result.user);
+      }).catch((error) => {
+        window.alert(error.message)
+      })
+  }
+
   get isLoggedIn(): boolean {
     const user = JSON.parse(localStorage.getItem('user'));
-    return (user !== null && user.emailVerified !== false) ? true : false;
+    return (user !== null) ? true : false;
   }
 
   AuthLogin(provider) {

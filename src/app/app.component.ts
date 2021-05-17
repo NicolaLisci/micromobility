@@ -24,14 +24,14 @@ export class AppComponent implements OnInit{
     async presentAlertPrompt() {
       const alert = await this.alertController.create({
         cssClass: 'my-custom-class',
-        header: 'Login',
+        header: 'Welcome',
         inputs: [],
         buttons: [
           {
-            text: 'Google Login',
+            text: 'Start',
             handler: (data) => {
-              this.authService.GoogleAuth().then((res:any)=>{
-                console.log(res)
+              this.authService.signInAnonymously().then((res:any)=>{
+                console.log(res);
               })
             }
           }
