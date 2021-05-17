@@ -26,6 +26,8 @@ export class HomePage implements OnInit{
   draw: any;
   style = 'mapbox://styles/mapbox/dark-v10';
   
+  userId;
+  
   coords;
   tripDuration;
   tripDirections = [];
@@ -102,6 +104,8 @@ export class HomePage implements OnInit{
       
       if(!localStorage.getItem('id')){
         localStorage.setItem('id',JSON.stringify(Math.floor(Math.random() * 11)));
+      }else{
+        this.userId = localStorage.getItem('id');
       }
       
       if(!localStorage.getItem('coordinates')){
