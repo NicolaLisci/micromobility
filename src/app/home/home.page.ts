@@ -11,6 +11,9 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import * as mapboxgl from 'mapbox-gl';
 import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { GeoJSONSource } from 'mapbox-gl';
+import { PubNubAngular } from 'pubnub-angular2';
+
+declare let eon: any;
 
 @Component({
   selector: 'app-home',
@@ -19,33 +22,87 @@ import { GeoJSONSource } from 'mapbox-gl';
 })
 export class HomePage implements OnInit{
   
+  map: mapboxgl.Map;
+  draw: any;
+  style = 'mapbox://styles/mapbox/dark-v10';
+  
+  coords;
+  tripDuration;
+  tripDirections = [];
+  
+  
+  coordinatesLiveTracking = null;
+  // lat = 39.03437700146109;
+  // lng = 8.999600913492351;
+  
+  
+  coordinates= {
+    latitude: 0,
+    longitude: 0
+  };
+  
   public deviceName$ = new Observable();
+  pubnub: PubNubAngular;
+  channel: string;
+  messages :any[] = null;
   
   constructor(
     private geolocation: Geolocation,
     private alertController: AlertController,
     private mapService: MapService,
+    pubnub: PubNubAngular
     // private bluetoothService: BluetoothService
-    ) {}
+    ) {
+      this.channel = 'my_channel';
+      this.pubnub = pubnub;
+      
+      this.pubnub.init({
+        publishKey: 'pub-c-9502aaeb-922b-45a9-a236-041365a3ed7d',
+        subscribeKey: 'sub-c-26ac9198-b71d-11eb-b2e5-0e040bede276'
+      });
+      
+      pubnub.addListener({
+        status: (st) => {
+          if (st.category === "PNUnknownCategory") {
+            var newState = {
+              new: 'error'
+            };
+            pubnub.setState({
+              state: newState
+            },
+            (status) => {
+              console.log(st.errorData.message);
+            });
+          }
+        },
+        message: (data) => {
+          console.log(data);
+          let el = document.createElement('div');
+          el.className = 'bluetooth';
+          
+          if(data.message.user != localStorage.getItem('id')){
+            new mapboxgl.Marker(el)
+            .setLngLat([data.message.coords.longitude,data.message.coords.latitude])
+            .addTo(this.map);
+          }
+        }
+      });
+      
+      this.pubnub.subscribe({
+        channels: [this.channel],
+        triggerEvents: ['message']
+      });
+    }
     
     
-    map: mapboxgl.Map;
-    draw: any;
-    style = 'mapbox://styles/mapbox/dark-v10';
-    
-    coords;
-    tripDuration;
-    tripDirections = [];
-    // lat = 39.03437700146109;
-    // lng = 8.999600913492351;
     
     
-    coordinates= {
-      latitude: 0,
-      longitude: 0
-    };
     
     ngOnInit(): void {
+      
+      if(!localStorage.getItem('id')){
+        localStorage.setItem('id',JSON.stringify(Math.floor(Math.random() * 11)));
+      }
       
       if(!localStorage.getItem('coordinates')){
         localStorage.setItem('coordinates', '{"latitude":0,"longitude":0}');
@@ -60,6 +117,34 @@ export class HomePage implements OnInit{
         logoPosition: "bottom-left",
         center: [coordinates.longitude,coordinates.latitude]
       });
+      
+      // this.messages = this.pubnub.getMessage(this.channel);
+      // console.log(this.messages)
+      
+      
+      // const markerUser = new mapboxgl.Marker()
+      // .setLngLat([this.messages[this.messages.length -1].latitude,this.messages[this.messages.length -1].longitude])
+      // .addTo(this.map);
+      
+      
+      this.liveTrackUser();
+      
+      // eon.map({
+      //   pubnub: this.pubnub,
+      //   id: 'map',
+      //   options: {
+      //     container: 'map',
+      //     style: this.style,
+      //     zoom: 15,
+      //     logoPosition: "bottom-left",
+      //     center: [coordinates.longitude,coordinates.latitude]
+      //   },
+      //   mbToken: environment.mapbox.accessToken,
+      //   mbId: 'ianjennings.l896mh2e',
+      //   channels: [this.channel],
+      //   // connect: connect
+      // });
+      
       
       this.addUserLocation();
       this.getUserLocation();
@@ -110,21 +195,19 @@ export class HomePage implements OnInit{
         });
       }
       
-      usersLiveTracking(){
-        var channel = 'pubnub-mapbox';
-        
-        var pn = new PubNub({
-          publishKey:   'YOUR_PUB_KEY', // replace with your own pub-key
-          subscribeKey: 'YOUR_SUB_KEY'  // replace with your own sub-key
-        });
-        
-        var map = eon.map({
-          pubnub: pn,
-          id: 'map',
-          mbToken: 'pk.eyJ1IjoiaWFuamVubmluZ3MiLCJhIjoiZExwb0p5WSJ9.XLi48h-NOyJOCJuu1-h-Jg',
-          mbId: 'ianjennings.l896mh2e',
-          channels: [channel]
-        });
+      
+      
+      liveTrackUser(){
+        setInterval(() => {
+          // console.log(this.coordinates);
+          let hw = {
+            user: localStorage.getItem('id'),
+            coords: this.coordinates
+          }
+          this.pubnub.publish({
+            channel: this.channel, message: hw
+          });
+        }, 1000);
       }
       
       mapDraw(){
@@ -218,32 +301,17 @@ export class HomePage implements OnInit{
         this.getMatch(newCoords, radius);
       }
       
-      // Make a Map Matching request
       getMatch(coordinates, radius) {
-        // Separate the radiuses with semicolons
         let radiuses = radius.join(';');
-        // Create the query
         this.mapService.getMapDraw(coordinates, radiuses).subscribe((res:any)=>{
           this.coords = res.matchings[0].geometry;
-          // Draw the route on the map
-          console.log(this.coords);
           this.addRoute(this.coords);
           this.getInstructions(res.matchings[0]);
         });
         
-        // $.ajax({
-        //   method: 'GET',
-        //   url: query
-        // }).done(function (data) {
-        //   let coords = data.matchings[0].geometry;
-        // Draw the route on the map
-        // addRoute(coords);
-        // getInstructions(data.matchings[0]);
-        // });
       }
       
       addRoute(coords) {
-        // If a route is already loaded, remove it
         if (this.map.getSource('route')) {
           this.map.removeLayer('route');
           this.map.removeSource('route');
@@ -360,7 +428,7 @@ export class HomePage implements OnInit{
         getUserLocation(){
           this.geolocation.getCurrentPosition().then((resp) => {
             this.coordinates.latitude = resp.coords.latitude;
-            this.coordinates.longitude = resp.coords.longitude
+            this.coordinates.longitude = resp.coords.longitude; 
           }).catch((error) => {
             console.log('Error getting location', error);
           });

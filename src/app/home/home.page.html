@@ -19,17 +19,19 @@
     <span class="font-semibold text-lg">{{tripDuration}}"</span>
     <p *ngFor="let instr of tripDirections">{{instr}}</p>
   </div>
-    <div id="map"></div>
+  <div id="map"></div>
   
-
+  
+  <p *ngFor='let item of messages' id="message">{{item.message.latitude}}:{{ item.message.longitude}}</p>
+  
   
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="onStartClick()" color="primary">
       <ion-icon name="map-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
-
+  
+  
   
   <!-- <ion-fab vertical="bottom" horizontal="start" slot="fixed">
     <ion-fab-button (click)="findDevice()">

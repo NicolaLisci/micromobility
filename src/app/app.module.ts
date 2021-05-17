@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { WebBluetoothModule } from '@manekinekko/angular-web-bluetooth';
+import { PubNubAngular } from 'pubnub-angular2';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,7 +22,13 @@ import { WebBluetoothModule } from '@manekinekko/angular-web-bluetooth';
     //   enableTracing: true // or false, this will enable logs in the browser's console
     // })
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [
+    {
+      provide: RouteReuseStrategy,
+      useClass: IonicRouteStrategy
+    },
+    PubNubAngular
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
