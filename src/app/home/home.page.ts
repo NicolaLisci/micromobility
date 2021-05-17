@@ -139,36 +139,9 @@ export class HomePage implements OnInit{
           logoPosition: "bottom-left",
           center: [coordinates.longitude,coordinates.latitude]
         });
-        
-        
-        // this.messages = this.pubnub.getMessage(this.channel);
-        // console.log(this.messages)
-        
-        
-        // const markerUser = new mapboxgl.Marker()
-        // .setLngLat([this.messages[this.messages.length -1].latitude,this.messages[this.messages.length -1].longitude])
-        // .addTo(this.map);
-        
-        
+
         this.liveTrackUser();
-        
-        // eon.map({
-        //   pubnub: this.pubnub,
-        //   id: 'map',
-        //   options: {
-        //     container: 'map',
-        //     style: this.style,
-        //     zoom: 15,
-        //     logoPosition: "bottom-left",
-        //     center: [coordinates.longitude,coordinates.latitude]
-        //   },
-        //   mbToken: environment.mapbox.accessToken,
-        //   mbId: 'ianjennings.l896mh2e',
-        //   channels: [this.channel],
-        //   // connect: connect
-        // });
-        
-        
+              
         this.addUserLocation();
         this.getUserLocation();
         
@@ -204,16 +177,15 @@ export class HomePage implements OnInit{
           });
           
           let geocoder = new MapboxGeocoder({
-            // Initialize the geocoder
-            accessToken: mapboxgl.accessToken, // Set the access token
-            mapboxgl: mapboxgl, // Set the mapbox-gl instance
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
             localGeocoder: this.coordinatesGeocoder,
-            marker: true, // Do not use the default marker style
-            placeholder: 'Search', // Placeholder text for the search bar
+            marker: true,
+            placeholder: 'Search', 
             proximity: {
               longitude: coordinates.longitude,
               latitude: coordinates.latitude
-            } // Coordinates of UC Berkeley
+            }
           });
           
           document.getElementById('geocoder').appendChild(geocoder.onAdd(this.map));
@@ -240,27 +212,24 @@ export class HomePage implements OnInit{
         
         liveTrackUser(){
           setInterval(() => {
-            // console.log(this.coordinates);
             let hw = {
-              user: JSON.parse(localStorage.getItem('user')).uid,
+              user: this.userId,
               coords: this.coordinates
             }
             this.pubnub.publish({
               channel: this.channel, message: hw
             });
-          }, 2000);
+          }, 4000);
         }
         
         mapDraw(){
           this.draw = new MapboxDraw({
-            // Instead of showing all the draw tools, show only the line string and delete tools
             displayControlsDefault: false,
             controls: {
               line_string: true,
               trash: true
             },
             styles: [
-              // Set the line style for the user-input coordinates
               {
                 'id': 'gl-draw-line',
                 'type': 'line',
@@ -280,7 +249,6 @@ export class HomePage implements OnInit{
                   'line-opacity': 0.7
                 }
               },
-              // Style the vertex point halos
               {
                 'id': 'gl-draw-polygon-and-line-vertex-halo-active',
                 'type': 'circle',
@@ -295,7 +263,6 @@ export class HomePage implements OnInit{
                   'circle-color': '#FFF'
                 }
               },
-              // Style the vertex points
               {
                 'id': 'gl-draw-polygon-and-line-vertex-active',
                 'type': 'circle',
@@ -312,13 +279,9 @@ export class HomePage implements OnInit{
               }
             ]
           });
-          
-          // Add the draw tool to the map
+        
           this.map.addControl(this.draw);
-          
-          
-          
-          // Add create, update, or delete actions
+
           this.map.on('draw.create',()=> this.updateRoute());
           this.map.on('draw.update',() => this.updateRoute());
           this.map.on('draw.delete', () => this.removeRoute());
@@ -326,14 +289,13 @@ export class HomePage implements OnInit{
         }
         
         updateRoute() {
-          this.removeRoute(); // Overwrite any existing layers
-          // Get the coordinates
+          this.removeRoute();
+
           let data:any = this.draw.getAll();
           let lastFeature = data.features.length - 1;
           let coords = data.features[lastFeature].geometry.coordinates;
-          // Format the coordinates
+
           let newCoords = coords.join(';');
-          // Set the radius for each coordinate pair to 25 meters
           let radius = [];
           coords.forEach((element) => {
             radius.push(25);
