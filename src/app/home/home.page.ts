@@ -248,7 +248,7 @@ export class HomePage implements OnInit{
             this.pubnub.publish({
               channel: this.channel, message: hw
             });
-          }, 3000);
+          }, 2000);
         }
         
         mapDraw(){
