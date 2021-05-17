@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "micromobilityx-01": {
+      "hosting": {
+        "app": [
+          "micromobilityx-01"
+        ]
+      }
+    }
+  }
+}

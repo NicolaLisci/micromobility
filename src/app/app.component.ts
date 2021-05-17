@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 import { PubNubAngular } from 'pubnub-angular2';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -7,33 +9,36 @@ import { PubNubAngular } from 'pubnub-angular2';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent implements OnInit{
-  // pubnub: PubNubAngular;
-  // channel: string;
-  // messages = [];
-
-  constructor(){}
-  
-  // constructor(pubnub: PubNubAngular) {
-  //   this.channel = 'my_channel';
-  //   this.pubnub = pubnub;
-  //   pubnub.init({
-  //     publishKey: 'pub-c-9502aaeb-922b-45a9-a236-041365a3ed7d',
-  //     subscribeKey: 'sub-c-26ac9198-b71d-11eb-b2e5-0e040bede276'
-  //   });
+  constructor(
+    private authService: AuthService,
+    private alertController: AlertController,
+    ){}
     
-  //   this.pubnub.subscribe({
-  //     channels: [this.channel],
-  //     triggerEvents: ['message']
-  //   });
-  // }
-  
-  ngOnInit() {
-  //   this.messages = this.pubnub.getMessage(this.channel);
-  //   setInterval(() => {
-  //     let hw = 'Hello World, ' + Date.now();
-  //     this.pubnub.publish({
-  //       channel: this.channel, message: hw
-  //     });
-  //   }, 1000);
+    ngOnInit() {
+      if(!this.authService.isLoggedIn){
+        this.presentAlertPrompt();
+      }
+      
+    }
+    
+    async presentAlertPrompt() {
+      const alert = await this.alertController.create({
+        cssClass: 'my-custom-class',
+        header: 'Login',
+        inputs: [],
+        buttons: [
+          {
+            text: 'Google Login',
+            handler: (data) => {
+              this.authService.GoogleAuth().then((res:any)=>{
+                console.log(res)
+              })
+            }
+          }
+        ]
+      });
+      
+      await alert.present();
+    }
   }
-}
+  

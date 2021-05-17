@@ -82,7 +82,7 @@ export class HomePage implements OnInit{
           let el = document.createElement('div');
           el.className = 'bluetooth';
           
-          if(data.message.user != localStorage.getItem('id')){
+          if(data.message.user != JSON.parse(localStorage.getItem('user')).uid){
             (this.map.getSource('drone') as GeoJSONSource).setData(
               {
                 "type": "FeatureCollection",
@@ -120,11 +120,11 @@ export class HomePage implements OnInit{
       
       ngOnInit(): void {
         
-        if(!localStorage.getItem('id')){
-          localStorage.setItem('id',JSON.stringify(Math.floor(Math.random() * 11)));
-        }else{
-          this.userId = localStorage.getItem('id');
-        }
+        // if(!localStorage.getItem('id')){
+        //   localStorage.setItem('id',JSON.stringify(Math.floor(Math.random() * 11)));
+        // }else{
+          this.userId = JSON.parse(localStorage.getItem('user')).uid;
+        // }
         
         if(!localStorage.getItem('coordinates')){
           localStorage.setItem('coordinates', '{"latitude":0,"longitude":0}');
@@ -242,7 +242,7 @@ export class HomePage implements OnInit{
           setInterval(() => {
             // console.log(this.coordinates);
             let hw = {
-              user: localStorage.getItem('id'),
+              user: JSON.parse(localStorage.getItem('user')).uid,
               coords: this.coordinates
             }
             this.pubnub.publish({

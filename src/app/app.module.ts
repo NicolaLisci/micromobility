@@ -9,6 +9,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { WebBluetoothModule } from '@manekinekko/angular-web-bluetooth';
 import { PubNubAngular } from 'pubnub-angular2';
+import { AngularFireModule } from '@angular/fire';
+import { config } from 'process';
+import { AngularFireAuthModule } from "@angular/fire/auth";
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
@@ -18,6 +22,8 @@ import { PubNubAngular } from 'pubnub-angular2';
     IonicModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
     // WebBluetoothModule.forRoot({
     //   enableTracing: true // or false, this will enable logs in the browser's console
     // })
