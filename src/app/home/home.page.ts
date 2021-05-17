@@ -77,9 +77,6 @@ export class HomePage implements OnInit{
           }
         });
         
-        
-        
-        
         let geocoder = new MapboxGeocoder({
           // Initialize the geocoder
           accessToken: mapboxgl.accessToken, // Set the access token
@@ -95,7 +92,6 @@ export class HomePage implements OnInit{
         
         document.getElementById('geocoder').appendChild(geocoder.onAdd(this.map));
         
-        // this.map.addControl(geocoder);
         
         this.map.addLayer(
           {
@@ -111,6 +107,23 @@ export class HomePage implements OnInit{
           'poi-label'
           );
           
+        });
+      }
+      
+      usersLiveTracking(){
+        var channel = 'pubnub-mapbox';
+        
+        var pn = new PubNub({
+          publishKey:   'YOUR_PUB_KEY', // replace with your own pub-key
+          subscribeKey: 'YOUR_SUB_KEY'  // replace with your own sub-key
+        });
+        
+        var map = eon.map({
+          pubnub: pn,
+          id: 'map',
+          mbToken: 'pk.eyJ1IjoiaWFuamVubmluZ3MiLCJhIjoiZExwb0p5WSJ9.XLi48h-NOyJOCJuu1-h-Jg',
+          mbId: 'ianjennings.l896mh2e',
+          channels: [channel]
         });
       }
       
@@ -272,7 +285,7 @@ export class HomePage implements OnInit{
             this.tripDirections.push(steps[j].maneuver.instruction);
           }
         }
-
+        
         this.tripDuration = Math.floor(data.duration / 60);
       }
       
