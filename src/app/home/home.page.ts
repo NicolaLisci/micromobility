@@ -126,9 +126,9 @@ export class HomePage implements OnInit{
           this.userId = JSON.parse(localStorage.getItem('user'))?.uid;
         // }
         
-        if(!localStorage.getItem('coordinates')){
-          localStorage.setItem('coordinates', '{"latitude":0,"longitude":0}');
-        }
+        // if(!localStorage.getItem('coordinates')){
+        //   localStorage.setItem('coordinates', '{"latitude":0,"longitude":0}');
+        // }
         const coordinates = JSON.parse(localStorage.getItem('coordinates'));
         
         (mapboxgl as any).accessToken = environment.mapbox.accessToken;
