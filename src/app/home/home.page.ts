@@ -123,7 +123,7 @@ export class HomePage implements OnInit{
         // if(!localStorage.getItem('id')){
         //   localStorage.setItem('id',JSON.stringify(Math.floor(Math.random() * 11)));
         // }else{
-          this.userId = JSON.parse(localStorage.getItem('user')).uid;
+          this.userId = JSON.parse(localStorage.getItem('user'))?.uid;
         // }
         
         if(!localStorage.getItem('coordinates')){

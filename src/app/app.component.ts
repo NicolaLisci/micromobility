@@ -16,29 +16,31 @@ export class AppComponent implements OnInit{
     
     ngOnInit() {
       if(!this.authService.isLoggedIn){
-        this.presentAlertPrompt();
+        this.authService.signInAnonymously().then((res:any)=>{
+          console.log(res);
+        });
       }
       
     }
     
-    async presentAlertPrompt() {
-      const alert = await this.alertController.create({
-        cssClass: 'my-custom-class',
-        header: 'Welcome',
-        inputs: [],
-        buttons: [
-          {
-            text: 'Start',
-            handler: (data) => {
-              this.authService.signInAnonymously().then((res:any)=>{
-                console.log(res);
-              })
-            }
-          }
-        ]
-      });
+    // async presentAlertPrompt() {
+    //   const alert = await this.alertController.create({
+    //     cssClass: 'my-custom-class',
+    //     header: 'Welcome',
+    //     inputs: [],
+    //     buttons: [
+    //       {
+    //         text: 'Start',
+    //         handler: (data) => {
+    //           this.authService.signInAnonymously().then((res:any)=>{
+    //             console.log(res);
+    //           });
+    //         }
+    //       }
+    //     ]
+    //   });
       
-      await alert.present();
-    }
+    //   await alert.present();
+    // }
   }
   
