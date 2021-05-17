@@ -101,9 +101,6 @@ export class HomePage implements OnInit{
                 ]
               }
               );
-              // new mapboxgl.Marker(el)
-              // .setLngLat([data.message.coords.longitude,data.message.coords.latitude])
-              // .addTo(this.map);
             }
           }
         });
@@ -119,16 +116,8 @@ export class HomePage implements OnInit{
       
       
       ngOnInit(): void {
-        
-        // if(!localStorage.getItem('id')){
-        //   localStorage.setItem('id',JSON.stringify(Math.floor(Math.random() * 11)));
-        // }else{
-          this.userId = JSON.parse(localStorage.getItem('user'))?.uid;
-        // }
-        
-        // if(!localStorage.getItem('coordinates')){
-        //   localStorage.setItem('coordinates', '{"latitude":0,"longitude":0}');
-        // }
+        this.userId = JSON.parse(localStorage.getItem('user'))?.uid;
+
         const coordinates = JSON.parse(localStorage.getItem('coordinates'));
         
         (mapboxgl as any).accessToken = environment.mapbox.accessToken;
@@ -139,9 +128,9 @@ export class HomePage implements OnInit{
           logoPosition: "bottom-left",
           center: [coordinates.longitude,coordinates.latitude]
         });
-
+        
         this.liveTrackUser();
-              
+        
         this.addUserLocation();
         this.getUserLocation();
         
@@ -173,6 +162,9 @@ export class HomePage implements OnInit{
             'source': 'drone',
             'layout': {
               'icon-image': 'rocket-15'
+            },
+            "paint": {
+              "icon-color": "#ff0000"
             }
           });
           
@@ -279,9 +271,9 @@ export class HomePage implements OnInit{
               }
             ]
           });
-        
+          
           this.map.addControl(this.draw);
-
+          
           this.map.on('draw.create',()=> this.updateRoute());
           this.map.on('draw.update',() => this.updateRoute());
           this.map.on('draw.delete', () => this.removeRoute());
@@ -290,11 +282,11 @@ export class HomePage implements OnInit{
         
         updateRoute() {
           this.removeRoute();
-
+          
           let data:any = this.draw.getAll();
           let lastFeature = data.features.length - 1;
           let coords = data.features[lastFeature].geometry.coordinates;
-
+          
           let newCoords = coords.join(';');
           let radius = [];
           coords.forEach((element) => {
@@ -459,8 +451,6 @@ export class HomePage implements OnInit{
               
               let el = document.createElement('div');
               el.className = 'bluetooth';
-              
-              // make a marker for each feature and add to the map
               new mapboxgl.Marker(el)
               .setLngLat([this.coordinates.longitude, this.coordinates.latitude])
               .addTo(this.map);
@@ -468,8 +458,6 @@ export class HomePage implements OnInit{
           }
           
           coordinatesGeocoder = (query) => {
-            // Match anything which looks like
-            // decimal degrees coordinate pair.
             var matches = query.match(
               /^[ ]*(?:Lat: )?(-?\d+\.?\d*)[, ]+(?:Lng: )?(-?\d+\.?\d*)[ ]*$/i
               );
