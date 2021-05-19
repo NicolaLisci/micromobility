@@ -6,6 +6,9 @@ import { HomePage } from './home.page';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { HomePageRoutingModule } from './home-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+import { MapModule } from '../map/map.module';
+import { GeocoderModule } from '../geocoder/geocoder.module';
+import { DirectionModule } from '../direction/direction.module';
 
 
 @NgModule({
@@ -14,9 +17,11 @@ import { HttpClientModule } from '@angular/common/http';
     FormsModule,
     IonicModule,
     HomePageRoutingModule,
-    
+    MapModule,
+    GeocoderModule,
+    DirectionModule
   ],
   declarations: [HomePage],
-  providers:[Geolocation]
+  // providers:[Geolocation]
 })
 export class HomePageModule {}

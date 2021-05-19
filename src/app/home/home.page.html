@@ -1,35 +1,42 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title *ngIf="deviceName$ | async as deviceName else connect">
+    <!-- <ion-title *ngIf="deviceName$ | async as deviceName else connect">
       {{deviceName}}
-    </ion-title>
-    <ng-template #connect>
+    </ion-title> -->
+    <!-- <ng-template #connect> -->
       <ion-title>
         {{userId}}
       </ion-title>
       
-    </ng-template>
+    <!-- </ng-template> -->
   </ion-toolbar>
 </ion-header>
 
 
 <ion-content [fullscreen]="true"> 
-  <div id="geocoder" class="geocoder"></div>
+  <app-geocoder></app-geocoder>
+  
+  <!-- <div id="geocoder" class="geocoder"></div> -->
+  
   <div id="directions" class="card" *ngIf="coords">
+    <app-direction></app-direction>
+  </div>
+  <!-- <div id="directions" class="card" *ngIf="coords">
     <span class="font-semibold text-lg">{{tripDuration}}"</span>
     <p *ngFor="let instr of tripDirections">{{instr}}</p>
-  </div>
-  <div id="map"></div>
+  </div> -->
+  
+  <app-map></app-map>
   
   
-  <p *ngFor='let item of messages' id="message">{{item.message.latitude}}:{{ item.message.longitude}}</p>
+  <!-- <p *ngFor='let item of messages' id="message">{{item.message.latitude}}:{{ item.message.longitude}}</p> -->
   
   
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="onStartClick()" color="primary">
       <ion-icon name="map-outline"></ion-icon>
     </ion-fab-button>
-  </ion-fab>
+  </ion-fab> -->
   
   
   

@@ -1,24 +1,195 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
+import * as mapboxgl from 'mapbox-gl';
+import { GeoJSONSource } from 'mapbox-gl';
 import { environment } from 'src/environments/environment';
+import { mapboxDrawOptions } from '../models/mapboxDraw.model';
+import { ApiService } from './api.service';
+import { NavigationService } from './navigation.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MapService {
   
-  // constructor(
-  //   private httpClient:HttpClient
-  //   ) { }
+  map: mapboxgl.Map;
+  draw: any;
+  userId;
+  style = 'mapbox://styles/mapbox/dark-v10';
+  coords;
+  tripDuration;
+  tripDirections = [];
+  
+  coordinates= {
+    latitude: 0,
+    longitude: 0
+  };
+  
+  
+  constructor(
+    private geolocation: Geolocation,
+    private apiService: ApiService,
+    private navigationService: NavigationService
+    // private pubnubService: PubnubService
+    ) {
+      this.userId = JSON.parse(localStorage.getItem('user'))?.uid;
+    }
+    
+    initMap(){
+      const coordinates = JSON.parse(localStorage.getItem('coordinates'));
+      (mapboxgl as any).accessToken = environment.mapbox.accessToken;
+      this.map = new mapboxgl.Map({
+        container: 'map',
+        style: this.style,
+        zoom: 15,
+        logoPosition: "bottom-left",
+        center: [coordinates.longitude,coordinates.latitude]
+      });
+    }
     
     
+    mapDraw(){
+      this.draw = new MapboxDraw(mapboxDrawOptions);
+      this.map.addControl(this.draw);
+      this.map.on('draw.create',()=> this.updateRoute());
+      this.map.on('draw.update',() =>this.updateRoute());
+      this.map.on('draw.delete', () => this.removeRoute());
+    }  
     
-  //   getIsochrone(coordinates:any, minutes:number){
-  //     return this.httpClient.get('https://api.mapbox.com/isochrone/v1/mapbox/cycling/'+coordinates.longitude + '%2C' + coordinates.latitude + '?contours_minutes=' + minutes + '&polygons=true&access_token=' +environment.mapbox.accessToken);
-  //   }
+    addDeviceInMap(){
+      this.geolocation.getCurrentPosition().then((resp) => {
+        this.coordinates.latitude = resp.coords.latitude;
+        this.coordinates.longitude = resp.coords.longitude
+      }).catch((error) => {
+        console.log('Error getting location', error);
+      });
+      
+      let watch = this.geolocation.watchPosition();
+      watch.subscribe((data:any) => {
+        this.coordinates.latitude = data.coords.latitude;
+        this.coordinates.longitude = data.coords.longitude;
+        
+        let el = document.createElement('div');
+        el.className = 'bluetooth';
+        new mapboxgl.Marker(el)
+        .setLngLat([this.coordinates.longitude, this.coordinates.latitude])
+        .addTo(this.map);
+      });
+    }
+    
+    addUserLocation(){
+      this.map.addControl(
+        new mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true
+        })
+        );
+      }
+      
+      getUserLocation(){
+        this.geolocation.getCurrentPosition().then((resp) => {
+          this.coordinates.latitude = resp.coords.latitude;
+          this.coordinates.longitude = resp.coords.longitude; 
+        }).catch((error) => {
+          console.log('Error getting location', error);
+        });
+        
+        let watch = this.geolocation.watchPosition();
+        watch.subscribe((data:any) => {
+          this.coordinates.latitude = data.coords.latitude;
+          this.coordinates.longitude = data.coords.longitude;
+          localStorage.setItem('coordinates',JSON.stringify(this.coordinates));
+        });
+      }
+      
+      addRoute(coords) {
+        if (this.map.getSource('route')) {
+          this.map.removeLayer('route');
+          this.map.removeSource('route');
+        } else {
+          this.map.addLayer(
+            {
+              'id': 'route',
+              'type': 'line',
+              'source': {
+                'type': 'geojson',
+                'data': {
+                  'type': 'Feature',
+                  'properties': {},
+                  'geometry': coords
+                }
+              },
+              'layout': {
+                'line-join': 'round',
+                'line-cap': 'round'
+              },
+              'paint': {
+                'line-color': '#03AA46',
+                'line-width': 8,
+                'line-opacity': 0.8
+              }
+            }
+            );
+          }
+        }
+        
+        getMatch(coordinates, radius) {
+          let radiuses = radius.join(';');
+          this.apiService.getMapDraw(coordinates, radiuses).subscribe((res:any)=>{
+            this.coords = res.matchings[0].geometry;
+            this.addRoute(this.coords);
+            // this.navigationService.getInstructions(res.matchings[0]);
+          });
+        }
+        
+        updateRoute() {
+          this.removeRoute();
+          let data:any = this.draw.getAll();
+          let lastFeature = data.features.length - 1;
+          let coords = data.features[lastFeature].geometry.coordinates;
+          let newCoords = coords.join(';');
+          let radius = [];
+          coords.forEach((element) => {
+            radius.push(25);
+          });
+          
+          this.getMatch(newCoords, radius);
+        }
+        
+        
+        removeRoute() {
+          this.coords = undefined;
+          if (this.map.getSource('route')) {
+            this.map.removeLayer('route');
+            this.map.removeSource('route');
+          } else {
+            return;
+          }
+        }
+        
+        getIsochrone(km, coordinates){
+          let minutes = (km/2) / 0.25;
+          this.apiService.getIsochrone(coordinates, minutes).subscribe((res: any)=>{
+            (this.map.getSource('iso') as GeoJSONSource).setData(res);
+          });
+        }
 
-  //   getMapDraw(coordinates:any, radiuses: any){
-  //     return this.httpClient.get('https://api.mapbox.com/matching/v5/mapbox/cycling/'+coordinates +'?geometries=geojson&radiuses=' + radiuses + '&steps=true&access_token=' +environment.mapbox.accessToken);
-  //   }
-
-  }
+        getInstructions(data) {
+          let directions = document.getElementById('directions');
+          
+          let legs = data.legs;
+          this.tripDuration
+          for (var i = 0; i < legs.length; i++) {
+            var steps = legs[i].steps;
+            for (var j = 0; j < steps.length; j++) {
+              this.tripDirections.push(steps[j].maneuver.instruction);
+            }
+          }
+          
+          this.tripDuration = Math.floor(data.duration / 60);
+        }
+        
+      }
