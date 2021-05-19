@@ -3,7 +3,7 @@ import { AfterContentInit, ChangeDetectionStrategy, Component, OnInit } from '@a
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { environment } from 'src/environments/environment';
 import { AlertController } from '@ionic/angular';
-import { MapService } from '../services/map.service';
+import { apiService, MapService } from '../services/map.service';
 import { BluetoothService } from '../services/bluetooth.service';
 import { Observable } from 'rxjs';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
@@ -12,6 +12,7 @@ import * as mapboxgl from 'mapbox-gl';
 import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { GeoJSONSource } from 'mapbox-gl';
 import { PubNubAngular } from 'pubnub-angular2';
+import { ApiService } from '../services/api.service';
 
 declare let eon: any;
 
@@ -21,6 +22,12 @@ declare let eon: any;
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit{
+  public get apiService(): ApiService {
+    return this._apiService;
+  }
+  public set apiService(value: ApiService) {
+    this._apiService = value;
+  }
   
   map: mapboxgl.Map;
   draw: any;
@@ -52,6 +59,7 @@ export class HomePage implements OnInit{
     private geolocation: Geolocation,
     private alertController: AlertController,
     private mapService: MapService,
+    private _apiService: ApiService,
     pubnub: PubNubAngular
     // private bluetoothService: BluetoothService
     ) {
@@ -298,7 +306,7 @@ export class HomePage implements OnInit{
         
         getMatch(coordinates, radius) {
           let radiuses = radius.join(';');
-          this.mapService.getMapDraw(coordinates, radiuses).subscribe((res:any)=>{
+          this.apiService.getMapDraw(coordinates, radiuses).subscribe((res:any)=>{
             this.coords = res.matchings[0].geometry;
             this.addRoute(this.coords);
             this.getInstructions(res.matchings[0]);
@@ -364,7 +372,7 @@ export class HomePage implements OnInit{
         
         getIsochrone(km){
           let minutes = (km/2) / 0.25;
-          this.mapService.getIsochrone(this.coordinates, minutes).subscribe((res: any)=>{
+          this.apiService.getIsochrone(this.coordinates, minutes).subscribe((res: any)=>{
             (this.map.getSource('iso') as GeoJSONSource).setData(res);
           })
         }
@@ -372,11 +380,7 @@ export class HomePage implements OnInit{
         onStartClick(){
           this.presentAlertPrompt();
         }
-        
-        findDevice(){
-          // this.bluetoothService.value();
-          // this.deviceName$ = this.bluetoothService.deviceName$.asObservable();
-        }
+
         
         async presentAlertPrompt() {
           const alert = await this.alertController.create({
