@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GeocoderService } from '../services/geocoder.service';
 import { MapService } from '../services/map.service';
+import { PubnubService } from '../services/pubnub.service';
 
 @Component({
   selector: 'app-map',
@@ -11,12 +12,14 @@ export class MapComponent implements OnInit {
   
   constructor(
     private mapService: MapService,
+    private pubNubService: PubnubService,
     private geocoderService: GeocoderService
     ) { }
     
     ngOnInit() {
+      this.pubNubService.initPubnub();
+      this.pubNubService.liveTrackUser(this.mapService.userId, this.mapService.coordinates);
       this.mapService.initMap();
-      // this.liveTrackUser();
       
       this.mapService.addUserLocation();
       this.mapService.getUserLocation();

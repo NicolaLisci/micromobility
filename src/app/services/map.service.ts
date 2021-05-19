@@ -30,8 +30,6 @@ export class MapService {
   constructor(
     private geolocation: Geolocation,
     private apiService: ApiService,
-    private navigationService: NavigationService
-    // private pubnubService: PubnubService
     ) {
       this.userId = JSON.parse(localStorage.getItem('user'))?.uid;
     }

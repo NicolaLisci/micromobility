@@ -7,30 +7,32 @@ import { MapService } from './map.service';
   providedIn: 'root'
 })
 export class PubnubService {
-
+  
   pubnub: PubNubAngular;
-  channel: string;
+  channel = 'my_channel';
   messages :any[] = null;
   
   constructor(
     pubnub: PubNubAngular,
     private mapService: MapService
-  ) {
-    this.channel = 'my_channel';
-      this.pubnub = pubnub;
+    ) {
       
+      this.pubnub = pubnub;
+    }
+    
+    initPubnub(){
       this.pubnub.init({
         publishKey: 'pub-c-9502aaeb-922b-45a9-a236-041365a3ed7d',
         subscribeKey: 'sub-c-26ac9198-b71d-11eb-b2e5-0e040bede276'
       });
       
-      pubnub.addListener({
+      this.pubnub.addListener({
         status: (st) => {
           if (st.category === "PNUnknownCategory") {
             var newState = {
               new: 'error'
             };
-            pubnub.setState({
+            this.pubnub.setState({
               state: newState
             },
             (status) => {
@@ -70,18 +72,20 @@ export class PubnubService {
           channels: [this.channel],
           triggerEvents: ['message']
         });
-  }
-
-
-  liveTrackUser(userId: string, coordinates: any){
-    setInterval(() => {
-      let hw = {
-        user: userId,
-        coords: coordinates
       }
-      this.pubnub.publish({
-        channel: this.channel, message: hw
-      });
-    }, 4000);
-  }
-}
+      
+      
+      liveTrackUser(userId: string, coordinates: any){
+        setInterval(() => {
+          console.log()
+          let hw = {
+            user: userId,
+            coords: coordinates
+          }
+          this.pubnub.publish({
+            channel: this.channel, message: hw
+          });
+        }, 4000);
+      }
+    }
+    
