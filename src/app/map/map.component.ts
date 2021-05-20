@@ -47,14 +47,11 @@ export class MapComponent implements OnInit {
         document.getElementById('geocoder').appendChild(geocoder.onAdd(this.mapService.map));
         
         geocoder.on('result', (res)=> {
-          geocoder.mapMarker.getElement().addEventListener('click', ()=> {
-            this.presentPopover(res);
-          })
+          geocoder.mapMarker.getElement().addEventListener('click', ()=> this.presentPopover(res));
+          geocoder.mapMarker.getElement().addEventListener('touchstart', ()=> this.presentPopover(res));
         });
-        
-        
+
         this.mapService.map.addLayer(isoLayerOptions,'poi-label');
-        
       });
     }
     
