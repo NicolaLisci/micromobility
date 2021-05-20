@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { defaultSourceOptions } from '../models/defaultSourceOptions.model';
+import { isoLayerOptions } from '../models/isoLayerOptions.model';
 import { droneLayerOptions } from '../models/pointerLayerOptions.model';
 import { ApiService } from '../services/api.service';
 import { GeocoderService } from '../services/geocoder.service';
@@ -43,31 +44,10 @@ export class MapComponent implements OnInit {
         const geocoder = this.geocoderService.initGeocoder(this.mapService.coordinates);
         document.getElementById('geocoder').appendChild(geocoder.onAdd(this.mapService.map));
         
-        
-        // const isoLayerOptions:any = {
-        //   'id': 'isoLayer',
-        //   'type': 'fill',
-        //   'source': 'iso',
-        //   'layout': {},
-        //   'paint': {
-        //     'fill-color': '#005a32',
-        //     'fill-opacity': 0.3
-        //   }
-        // };
-        
-        // this.mapService.map.addLayer(isoLayerOptions,'poi-label');
+        this.mapService.map.addLayer(isoLayerOptions,'poi-label');
         
       });
     }
-
-    // getMatch(coordinates, radius) {
-    //   let radiuses = radius.join(';');
-    //   this.apiService.getMapDraw(coordinates, radiuses).subscribe((res:any)=>{
-    //     this.coords = res.matchings[0].geometry;
-    //     this.addRoute(this.coords);
-    //     // this.navigationService.getInstructions(res.matchings[0]);
-    //   });
-    // }
     
   }
   

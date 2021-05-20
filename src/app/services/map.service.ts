@@ -173,9 +173,9 @@ export class MapService {
           }
         }
         
-        getIsochrone(km, coordinates){
+        getIsochrone(km){
           let minutes = (km/2) / 0.25;
-          this.apiService.getIsochrone(coordinates, minutes).subscribe((res: any)=>{
+          this.apiService.getIsochrone(this.coordinates, minutes).subscribe((res: any)=>{
             (this.map.getSource('iso') as GeoJSONSource).setData(res);
           });
         }

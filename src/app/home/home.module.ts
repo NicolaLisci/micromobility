@@ -1,14 +1,12 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HomePage } from './home.page';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { HomePageRoutingModule } from './home-routing.module';
-import { HttpClientModule } from '@angular/common/http';
-import { MapModule } from '../map/map.module';
-import { GeocoderModule } from '../geocoder/geocoder.module';
+import { IonicModule } from '@ionic/angular';
 import { DirectionModule } from '../direction/direction.module';
+import { GeocoderModule } from '../geocoder/geocoder.module';
+import { MapModule } from '../map/map.module';
+import { HomePageRoutingModule } from './home-routing.module';
+import { HomePage } from './home.page';
 
 
 @NgModule({
@@ -22,6 +20,5 @@ import { DirectionModule } from '../direction/direction.module';
     DirectionModule
   ],
   declarations: [HomePage],
-  // providers:[Geolocation]
 })
 export class HomePageModule {}

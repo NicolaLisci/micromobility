@@ -41,10 +41,8 @@ export class PubnubService {
           }
         },
         message: (data) => {
-          // console.log(data.message);
-          let el = document.createElement('div');
-          el.className = 'bluetooth';
-          
+          console.log(data.message);
+         
           if(data.message.user != JSON.parse(localStorage.getItem('user')).uid){
             (this.mapService.map.getSource('drone') as GeoJSONSource).setData(
               {
