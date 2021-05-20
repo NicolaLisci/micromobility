@@ -3,6 +3,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
 import * as mapboxgl from 'mapbox-gl';
 import { GeoJSONSource } from 'mapbox-gl';
+import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { mapboxDrawOptions } from '../models/mapboxDraw.model';
 import { ApiService } from './api.service';
@@ -18,13 +19,13 @@ export class MapService {
   userId;
   style = 'mapbox://styles/mapbox/dark-v10';
   coords;
-  tripDuration;
-  tripDirections = [];
   
   coordinates= {
-    latitude: 0,
-    longitude: 0
+    latitude: 41.8874314503,
+    longitude: 12.4886930452
   };
+
+  public instructions = new Subject();
   
   
   constructor(
@@ -35,14 +36,18 @@ export class MapService {
     }
     
     initMap(){
-      const coordinates = JSON.parse(localStorage.getItem('coordinates'));
+      if(localStorage.getItem('coordinates')){
+        this.coordinates = JSON.parse(localStorage.getItem('coordinates'));
+      }
+ 
+
       (mapboxgl as any).accessToken = environment.mapbox.accessToken;
       this.map = new mapboxgl.Map({
         container: 'map',
         style: this.style,
         zoom: 15,
         logoPosition: "bottom-left",
-        center: [coordinates.longitude,coordinates.latitude]
+        center: [this.coordinates.longitude, this.coordinates.latitude]
       });
     }
     
@@ -139,7 +144,8 @@ export class MapService {
           this.apiService.getMapDraw(coordinates, radiuses).subscribe((res:any)=>{
             this.coords = res.matchings[0].geometry;
             this.addRoute(this.coords);
-            // this.navigationService.getInstructions(res.matchings[0]);
+            const instructions =  this.getInstructions(res.matchings[0]);
+            this.instructions.next(instructions);
           });
         }
         
@@ -174,20 +180,18 @@ export class MapService {
             (this.map.getSource('iso') as GeoJSONSource).setData(res);
           });
         }
-
+        
         getInstructions(data) {
-          let directions = document.getElementById('directions');
-          
           let legs = data.legs;
-          this.tripDuration
+          let tripDirections = [], tripDuration;
           for (var i = 0; i < legs.length; i++) {
             var steps = legs[i].steps;
             for (var j = 0; j < steps.length; j++) {
-              this.tripDirections.push(steps[j].maneuver.instruction);
+              tripDirections.push(steps[j].maneuver.instruction);
             }
           }
-          
-          this.tripDuration = Math.floor(data.duration / 60);
+          tripDuration = Math.floor(data.duration / 60);
+          return { tripDuration, tripDirections };
         }
         
       }

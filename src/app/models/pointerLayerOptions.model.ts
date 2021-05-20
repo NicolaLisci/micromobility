@@ -6,6 +6,6 @@ export const droneLayerOptions : any= {
       'icon-image': 'rocket-15'
     },
     "paint": {
-      "icon-color": "#ff0000"
+      "icon-color": "#FF0000"
     }
   };

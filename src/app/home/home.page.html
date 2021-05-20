@@ -18,8 +18,8 @@
   
   <!-- <div id="geocoder" class="geocoder"></div> -->
   
-  <div id="directions" class="card" *ngIf="coords">
-    <app-direction></app-direction>
+  <div id="directions" class="card" *ngIf="instructions | async as instructions">
+    <app-direction [tripDirections]="instructions.tripDirections" [tripDuration]="instructions.tripDuration"></app-direction>
   </div>
   <!-- <div id="directions" class="card" *ngIf="coords">
     <span class="font-semibold text-lg">{{tripDuration}}"</span>

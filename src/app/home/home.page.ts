@@ -30,8 +30,10 @@ export class HomePage implements OnInit{
   
   // userId;
   
-  coords;
-  userId;
+  public coords;
+  public userId;
+
+  public instructions = new Observable<any>();
   // tripDuration;
   // tripDirections = [];
   
@@ -122,6 +124,8 @@ export class HomePage implements OnInit{
       this.coords = this.mapService.coords;
     
       this.userId = JSON.parse(localStorage.getItem('user'))?.uid;
+
+     this.instructions = this.mapService.instructions.asObservable();
       
       // const coordinates = JSON.parse(localStorage.getItem('coordinates'));
       
