@@ -146,7 +146,7 @@ export class MapService {
             this.coords = res.matchings[0].geometry;
             this.addRoute(this.coords);
             const instructions =  this.getInstructions(res.matchings[0]);
-            this.instructions.next(instructions);
+            this.instructions.next(res);
           });
         }
         

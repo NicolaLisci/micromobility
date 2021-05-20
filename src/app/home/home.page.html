@@ -13,7 +13,7 @@
   <div id="directions" class="card" *ngIf="instructions | async as instructions">
     <ion-button size="small" (click)="onCloseClick()" class="absolute right-0 top-0">close</ion-button>
     <div>
-      <app-direction [tripDirections]="instructions.tripDirections" [tripDuration]="instructions.tripDuration"></app-direction>
+      <app-direction [instructions]="instructions" ></app-direction>
     </div>
     <!-- <div class="flex justify-end fixed"> -->
       
