@@ -7,22 +7,25 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 })
 export class GeocoderService {
   
+  public geocoder;
   constructor() { }
   
   
   initGeocoder(coordinates){
-    let geocoder = new MapboxGeocoder({
+    this.geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
       localGeocoder: this.coordinatesGeocoder,
-      marker: true,
+      // marker: true,
+      marker: {},
       placeholder: 'Search', 
       proximity: {
         longitude: coordinates.longitude,
         latitude: coordinates.latitude
       }
     });
-    return geocoder;
+
+    return this.geocoder;
   }
   
   coordinatesGeocoder = (query) => {

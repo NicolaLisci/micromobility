@@ -139,6 +139,8 @@ export class MapService {
         }
         
         getMatch(coordinates, radius) {
+          console.log(coordinates)
+          console.log(radius)
           let radiuses = radius.join(';');
           this.apiService.getMapDraw(coordinates, radiuses).subscribe((res:any)=>{
             this.coords = res.matchings[0].geometry;

@@ -41,7 +41,7 @@ export class PubnubService {
           }
         },
         message: (data) => {
-          console.log(data.message);
+          // console.log(data.message);
          
           if(data.message.user != JSON.parse(localStorage.getItem('user')).uid){
             (this.mapService.map.getSource('drone') as GeoJSONSource).setData(
@@ -75,7 +75,6 @@ export class PubnubService {
       
       liveTrackUser(userId: string, coordinates: any){
         setInterval(() => {
-          console.log()
           let hw = {
             user: userId,
             coords: coordinates
