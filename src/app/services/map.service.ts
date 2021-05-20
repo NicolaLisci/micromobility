@@ -7,7 +7,6 @@ import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { mapboxDrawOptions } from '../models/mapboxDraw.model';
 import { ApiService } from './api.service';
-import { NavigationService } from './navigation.service';
 
 @Injectable({
   providedIn: 'root',

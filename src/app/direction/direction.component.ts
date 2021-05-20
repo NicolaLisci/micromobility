@@ -1,5 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { NavigationService } from '../services/navigation.service';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-direction',

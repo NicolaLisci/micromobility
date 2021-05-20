@@ -41,7 +41,7 @@ export class PubnubService {
           }
         },
         message: (data) => {
-          console.log(data);
+          // console.log(data.message);
           let el = document.createElement('div');
           el.className = 'bluetooth';
           
