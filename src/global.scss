@@ -48,3 +48,16 @@
     // --width:100px;
     // --height:140px;
 }
+
+.card{
+    position: absolute;
+    max-height: 200px;
+    margin-top: 5px;
+    margin-left: 5px;
+    padding: 12px;
+    width: 80%;
+    z-index: 1;
+    bottom: 35px;
+    background-color: #fff;
+    border-radius: 5px;
+  }

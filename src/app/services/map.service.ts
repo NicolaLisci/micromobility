@@ -3,7 +3,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
 import * as mapboxgl from 'mapbox-gl';
 import { GeoJSONSource } from 'mapbox-gl';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { mapboxDrawOptions } from '../models/mapboxDraw.model';
 import { ApiService } from './api.service';
@@ -24,7 +24,7 @@ export class MapService {
     longitude: 12.4886930452
   };
 
-  public instructions = new Subject();
+  public instructions = new BehaviorSubject<any>(false);
   
   
   constructor(
@@ -56,7 +56,9 @@ export class MapService {
       this.map.addControl(this.draw);
       this.map.on('draw.create',()=> this.updateRoute());
       this.map.on('draw.update',() =>this.updateRoute());
-      this.map.on('draw.delete', () => this.removeRoute());
+      this.map.on('draw.delete', (event) =>{
+        this.removeRoute()
+      } );      
     }  
     
     addDeviceInMap(){
@@ -129,7 +131,7 @@ export class MapService {
                 'line-cap': 'round'
               },
               'paint': {
-                'line-color': '#03AA46',
+                'line-color': '#438EE4',
                 'line-width': 8,
                 'line-opacity': 0.8
               }
@@ -139,8 +141,6 @@ export class MapService {
         }
         
         getMatch(coordinates, radius) {
-          console.log(coordinates)
-          console.log(radius)
           let radiuses = radius.join(';');
           this.apiService.getMapDraw(coordinates, radiuses).subscribe((res:any)=>{
             this.coords = res.matchings[0].geometry;

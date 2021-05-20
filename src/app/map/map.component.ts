@@ -30,7 +30,7 @@ export class MapComponent implements OnInit {
       
       this.mapService.addUserLocation();
       this.mapService.getUserLocation();
-      
+
       this.mapService.mapDraw();
       this.onMapLoaded();
     }
@@ -74,6 +74,6 @@ export class MapComponent implements OnInit {
         this.mapService.getMatch(coordinates, radius);
       });
     }
-    
+
   }
   

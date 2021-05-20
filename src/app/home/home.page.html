@@ -1,22 +1,28 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-      <ion-title>
-        {{userId}}
-      </ion-title>        
-    </ion-toolbar>
-  </ion-header>
+    <ion-title>
+      {{userId}}
+    </ion-title>        
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true"> 
+  <app-geocoder></app-geocoder>
   
-  
-  <ion-content [fullscreen]="true"> 
-    <app-geocoder></app-geocoder>
-    
-    <div id="directions" class="card" *ngIf="instructions | async as instructions">
+  <div id="directions" class="card" *ngIf="instructions | async as instructions">
+    <ion-button size="small" (click)="onCloseClick()" class="absolute right-0 top-0">close</ion-button>
+    <div>
       <app-direction [tripDirections]="instructions.tripDirections" [tripDuration]="instructions.tripDuration"></app-direction>
+    </div>
+    <!-- <div class="flex justify-end fixed"> -->
+      
+      <!-- </div> -->
     </div>
     
     <app-map></app-map>
-
-
+    
+    
     <ion-fab horizontal="end" vertical="bottom" slot="fixed">
       <ion-fab-button color="primary">
         <ion-icon name="chevron-up-outline"></ion-icon>
@@ -40,4 +46,5 @@
     
   </ion-content>
   
-
+  
+  

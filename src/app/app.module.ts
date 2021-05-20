@@ -12,6 +12,7 @@ import { config } from 'process';
 import { AngularFireAuthModule } from "@angular/fire/auth";
 import { environment } from 'src/environments/environment';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { MapService } from './services/map.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -36,6 +37,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
     },
     Geolocation,
     PubNubAngular,
+    MapService
   ],
   bootstrap: [AppComponent],
 })

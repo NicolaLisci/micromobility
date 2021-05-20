@@ -26,8 +26,10 @@ export class HomePage implements OnInit{
   
   public coords;
   public userId;
+  public showCard = true
   
   public instructions = new Observable<any>();
+  // public instructions ;
   
   constructor(
     private mapService: MapService,
@@ -39,6 +41,9 @@ export class HomePage implements OnInit{
       this.coords = this.mapService.coords;
       this.userId = JSON.parse(localStorage.getItem('user'))?.uid;  
       this.instructions = this.mapService.instructions.asObservable();
+      // this.mapService.instructions.asObservable().subscribe((res)=>{
+      //   this.instructions = res;
+      // });
     }
     
     async getIsochrone() {
@@ -70,6 +75,11 @@ export class HomePage implements OnInit{
       });
       
       await alert.present();
+    }
+
+    onCloseClick(){
+      this.mapService.instructions.next(false);
+      this.mapService.removeRoute();
     }
   }
   
