@@ -1,19 +1,9 @@
-import { AfterContentInit, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-
-import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { environment } from 'src/environments/environment';
+import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { MapService } from '../services/map.service';
-import { BluetoothService } from '../services/bluetooth.service';
-import { Observable } from 'rxjs';
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import * as mapboxgl from 'mapbox-gl';
-import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
-import { GeoJSONSource } from 'mapbox-gl';
-import { PubNubAngular } from 'pubnub-angular2';
-import { ApiService } from '../services/api.service';
-import { mapboxDrawOptions } from '../models/mapboxDraw.model';
+import { Observable } from 'rxjs';
+import { MapService } from '../services/map.service';
+
 
 declare let eon: any;
 
