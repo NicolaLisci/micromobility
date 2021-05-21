@@ -24,8 +24,6 @@ import { DirectionModule } from './direction/direction.module';
       mode: 'ios'
     }),
     AppRoutingModule,
-    IonicModule,
-    DirectionModule,
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,

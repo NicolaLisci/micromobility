@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { ToastController } from '@ionic/angular';
 import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
 import * as mapboxgl from 'mapbox-gl';
 import { GeoJSONSource } from 'mapbox-gl';
@@ -30,6 +31,7 @@ export class MapService {
   constructor(
     private geolocation: Geolocation,
     private apiService: ApiService,
+    public toastController: ToastController
     ) {
       this.userId = JSON.parse(localStorage.getItem('user'))?.uid;
     }
@@ -144,11 +146,16 @@ export class MapService {
         getMatch(coordinates, radius, location?) {
           let radiuses = radius.join(';');
           this.apiService.getDirections(coordinates, radiuses).subscribe((res:any)=>{
-            this.coords = res.matchings[0].geometry;
-            this.addRoute(this.coords);
-            const instructions =  this.getInstructions(res.matchings[0]);
-            console.log({location, res});
-            this.locationInformation.next({location, tripInformation: res});
+            console.log(res.code)
+            if(res.code != 'Ok'){
+              this.presentToast();
+            }else{
+              this.coords = res.matchings[0].geometry;
+              this.addRoute(this.coords);
+              const instructions =  this.getInstructions(res.matchings[0]);
+              console.log({location, res});
+              this.locationInformation.next({location, tripInformation: res});
+            }
           });
         }
         
@@ -195,6 +202,14 @@ export class MapService {
           }
           tripDuration = Math.floor(data.duration / 60);
           return { tripDuration, tripDirections };
+        }
+
+        async presentToast() {
+          const toast = await this.toastController.create({
+            message: 'Maybe the location is too far to reach with your vehicle. Please consider another destination',
+            duration: 2000
+          });
+          toast.present();
         }
         
       }
