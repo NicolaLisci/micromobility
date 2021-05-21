@@ -1,8 +1,8 @@
 <div class="flex justify-between">
     <div class="flex flex-col">
         <span class="font-semibold text-2xl">{{location}}</span>
-        <span class="font-semibold text-2xl">{{tripDuration}}min</span>
-        <span class="font-semibold text-xlg">{{tripDistance}}</span>
+        <span class="font-semibold text-2xl">{{tripDuration}} min</span>
+        <span class="font-semibold text-gray-500 text-xlg">{{tripDistance | number : '1.2-2'}} km</span>
     </div>
     <!-- <p *ngFor="let instr of tripDirections">{{instr}}</p> -->
     <div>

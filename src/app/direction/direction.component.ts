@@ -34,7 +34,7 @@ export class DirectionComponent implements OnInit{
     } 
     
     getTripDistance(data){
-      this.tripDistance = data.distance / 1000 + 'km';
+      this.tripDistance = data.distance / 1000;
     }
     
     onStartClick(){
