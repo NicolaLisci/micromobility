@@ -76,11 +76,7 @@ export class HomePage implements OnInit{
       
       await alert.present();
     }
-    
-    onCloseClick(){
-      this.mapService.locationInformation.next(false);
-      this.mapService.removeRoute();
-    }
+  
   
   }
   

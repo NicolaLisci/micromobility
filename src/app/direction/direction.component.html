@@ -5,5 +5,10 @@
         <span class="font-semibold text-xlg">{{tripDistance}}</span>
     </div>
     <!-- <p *ngFor="let instr of tripDirections">{{instr}}</p> -->
-    <ion-button (click)="onStartClick()" class="">START</ion-button>
+    <div>
+        <ion-button *ngIf="!showCloseButton"  (click)="onStartClick()">START</ion-button>
+        <ion-button *ngIf="showCloseButton" (click)="onCloseClick()" color="danger">
+            <ion-icon name="close-outline"></ion-icon>
+        </ion-button>
+    </div>
 </div>

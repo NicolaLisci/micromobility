@@ -10,10 +10,12 @@ export class DirectionComponent implements OnInit{
   
   @Input() data;
   
-  tripDuration;
-  tripDistance;
+  public tripDuration;
+  public tripDistance;
   
-  location;
+  public location;
+
+  public showCloseButton = false;
   
   constructor(
     private mapService : MapService
@@ -37,12 +39,18 @@ export class DirectionComponent implements OnInit{
     
     onStartClick(){
       console.log(this.data.tripInformation)
+      this.showCloseButton = true;
       this.mapService.map.easeTo({
         center: {lon: this.mapService.coordinates.longitude, lat: this.mapService.coordinates.latitude},
         pitch:60,
         zoom:15,
         bearing: this.data.tripInformation.matchings[0].legs[0].steps[0].intersections[0].bearings[0]
       });
+    }
+
+    onCloseClick(){
+      this.mapService.locationInformation.next(false);
+      this.mapService.removeRoute();
     }
     
   }
