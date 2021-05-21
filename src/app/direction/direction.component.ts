@@ -49,6 +49,7 @@ export class DirectionComponent implements OnInit{
     }
 
     onCloseClick(){
+      this.mapService.map.easeTo({pitch:0});
       this.mapService.locationInformation.next(false);
       this.mapService.removeRoute();
     }

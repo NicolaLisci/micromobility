@@ -16,7 +16,6 @@ export class GeocoderService {
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
       localGeocoder: this.coordinatesGeocoder,
-      // marker: true,
       marker: {},
       placeholder: 'Search', 
       proximity: {

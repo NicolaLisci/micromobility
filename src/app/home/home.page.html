@@ -7,7 +7,7 @@
 </ion-header>
 
 
-<ion-content [fullscreen]="true"> 
+<ion-content id="mainContent" [fullscreen]="true"> 
   <app-geocoder></app-geocoder>
   
   <div id="directions" class="card" *ngIf="locationInformation | async as locationInformation">

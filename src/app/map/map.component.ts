@@ -48,6 +48,7 @@ export class MapComponent implements OnInit {
         
         geocoder.on('result', (res)=> {
           console.log(res)
+          this.mapService.map.resize();
           const coordinates = this.mapService.coordinates.longitude+'%2C'+this.mapService.coordinates.latitude+'%3B'+res.result.center[0]+'%2C'+res.result.center[1];
           const radius = [25,25];
           geocoder.mapMarker.getElement().addEventListener('click', ()=> this.mapService.getMatch(coordinates, radius, res));
