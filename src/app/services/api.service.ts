@@ -18,6 +18,11 @@ export class ApiService {
     }
 
     getMapDraw(coordinates:any, radiuses: any){
+      return this.httpClient.get('https://api.mapbox.com/directions/v5/mapbox/cycling/'+coordinates+'?geometries=geojson&radiuses=' + radiuses + '&steps=true&access_token=' +environment.mapbox.accessToken);
+    }
+
+    getDirections(coordinates:any, radiuses: any){
+      console.log(coordinates);
       return this.httpClient.get('https://api.mapbox.com/matching/v5/mapbox/cycling/'+coordinates+'?geometries=geojson&radiuses=' + radiuses + '&steps=true&access_token=' +environment.mapbox.accessToken);
     }
 }

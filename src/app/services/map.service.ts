@@ -24,7 +24,7 @@ export class MapService {
     longitude: 12.4886930452
   };
 
-  public instructions = new BehaviorSubject<any>(false);
+  public locationInformation = new BehaviorSubject<any>(false);
   
   
   constructor(
@@ -103,6 +103,7 @@ export class MapService {
         
         let watch = this.geolocation.watchPosition();
         watch.subscribe((data:any) => {
+          // console.log(data)
           this.coordinates.latitude = data.coords.latitude;
           this.coordinates.longitude = data.coords.longitude;
           localStorage.setItem('coordinates',JSON.stringify(this.coordinates));
@@ -140,13 +141,14 @@ export class MapService {
           }
         }
         
-        getMatch(coordinates, radius) {
+        getMatch(coordinates, radius, location?) {
           let radiuses = radius.join(';');
-          this.apiService.getMapDraw(coordinates, radiuses).subscribe((res:any)=>{
+          this.apiService.getDirections(coordinates, radiuses).subscribe((res:any)=>{
             this.coords = res.matchings[0].geometry;
             this.addRoute(this.coords);
             const instructions =  this.getInstructions(res.matchings[0]);
-            this.instructions.next(res);
+            console.log({location, res});
+            this.locationInformation.next({location, tripInformation: res});
           });
         }
         

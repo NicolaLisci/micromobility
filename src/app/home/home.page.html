@@ -10,10 +10,10 @@
 <ion-content [fullscreen]="true"> 
   <app-geocoder></app-geocoder>
   
-  <div id="directions" class="card" *ngIf="instructions | async as instructions">
-    <ion-button size="small" (click)="onCloseClick()" class="absolute right-0 top-0">close</ion-button>
+  <div id="directions" class="card" *ngIf="locationInformation | async as locationInformation">
+    <!-- <ion-button size="small" (click)="onCloseClick()" class="absolute right-0 top-0">close</ion-button> -->
     <div>
-      <app-direction [instructions]="instructions" ></app-direction>
+      <app-direction [data]="locationInformation" ></app-direction>
     </div>
     <!-- <div class="flex justify-end fixed"> -->
       

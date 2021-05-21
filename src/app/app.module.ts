@@ -13,6 +13,7 @@ import { AngularFireAuthModule } from "@angular/fire/auth";
 import { environment } from 'src/environments/environment';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { MapService } from './services/map.service';
+import { DirectionModule } from './direction/direction.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -23,6 +24,8 @@ import { MapService } from './services/map.service';
       mode: 'ios'
     }),
     AppRoutingModule,
+    IonicModule,
+    DirectionModule,
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,

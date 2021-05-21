@@ -28,7 +28,7 @@ export class HomePage implements OnInit{
   public userId;
   public showCard = true
   
-  public instructions = new Observable<any>();
+  public locationInformation = new Observable<any>();
   // public instructions ;
   
   constructor(
@@ -40,7 +40,7 @@ export class HomePage implements OnInit{
     ngOnInit(): void {
       this.coords = this.mapService.coords;
       this.userId = JSON.parse(localStorage.getItem('user'))?.uid;  
-      this.instructions = this.mapService.instructions.asObservable();
+      this.locationInformation = this.mapService.locationInformation.asObservable();
       // this.mapService.instructions.asObservable().subscribe((res)=>{
       //   this.instructions = res;
       // });
@@ -76,10 +76,11 @@ export class HomePage implements OnInit{
       
       await alert.present();
     }
-
+    
     onCloseClick(){
-      this.mapService.instructions.next(false);
+      this.mapService.locationInformation.next(false);
       this.mapService.removeRoute();
     }
+  
   }
   

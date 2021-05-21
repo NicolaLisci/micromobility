@@ -13,7 +13,6 @@ import { HomePage } from './home.page';
   imports: [
     CommonModule,
     FormsModule,
-    IonicModule,
     HomePageRoutingModule,
     MapModule,
     GeocoderModule,
