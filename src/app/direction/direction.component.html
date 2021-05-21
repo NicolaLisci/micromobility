@@ -1,7 +1,9 @@
-<div class="flex flex-col">
-    <span class="font-semibold text-2xl">{{location}}</span>
-    <span class="font-semibold text-2xl">{{tripDuration}}min</span>
-    <span class="font-semibold text-xlg">{{tripDistance}}</span>
+<div class="flex justify-between">
+    <div class="flex flex-col">
+        <span class="font-semibold text-2xl">{{location}}</span>
+        <span class="font-semibold text-2xl">{{tripDuration}}min</span>
+        <span class="font-semibold text-xlg">{{tripDistance}}</span>
+    </div>
     <!-- <p *ngFor="let instr of tripDirections">{{instr}}</p> -->
-    <ion-button size="small" (click)="onStartClick()" class="absolute right-0 top-0">START</ion-button>
+    <ion-button (click)="onStartClick()" class="">START</ion-button>
 </div>
