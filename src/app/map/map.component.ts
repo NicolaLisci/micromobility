@@ -8,6 +8,7 @@ import { ApiService } from '../services/api.service';
 import { GeocoderService } from '../services/geocoder.service';
 import { MapService } from '../services/map.service';
 import { PubnubService } from '../services/pubnub.service';
+import { Keyboard } from '@capacitor/keyboard';
 
 @Component({
   selector: 'app-map',
@@ -47,7 +48,8 @@ export class MapComponent implements OnInit {
         document.getElementById('geocoder').appendChild(geocoder.onAdd(this.mapService.map));
         
         geocoder.on('result', (res)=> {
-          console.log(res)
+          console.log(res);
+          Keyboard.hide();
           this.mapService.map.resize();
           const coordinates = this.mapService.coordinates.longitude+'%2C'+this.mapService.coordinates.latitude+'%3B'+res.result.center[0]+'%2C'+res.result.center[1];
           const radius = [25,25];
