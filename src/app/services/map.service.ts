@@ -14,17 +14,18 @@ import { ApiService } from './api.service';
 })
 export class MapService {
   
-  map: mapboxgl.Map;
-  draw: any;
-  userId;
-  style = 'mapbox://styles/mapbox/dark-v10';
-  coords;
+  public map: mapboxgl.Map;
+  public draw: any;
+  public userId;
+  private style = 'mapbox://styles/mapbox/dark-v10';
+  public coords;
+  public heading;
   
   coordinates= {
     latitude: 41.8874314503,
     longitude: 12.4886930452
   };
-
+  
   public locationInformation = new BehaviorSubject<any>(false);
   
   
@@ -40,8 +41,8 @@ export class MapService {
       if(localStorage.getItem('coordinates')){
         this.coordinates = JSON.parse(localStorage.getItem('coordinates'));
       }
- 
-
+      
+      
       (mapboxgl as any).accessToken = environment.mapbox.accessToken;
       this.map = new mapboxgl.Map({
         container: 'map',
@@ -98,16 +99,19 @@ export class MapService {
       getUserLocation(){
         this.geolocation.getCurrentPosition().then((resp) => {
           this.coordinates.latitude = resp.coords.latitude;
-          this.coordinates.longitude = resp.coords.longitude; 
+          this.coordinates.longitude = resp.coords.longitude;
+          // this.bearing = resp.bearing;
         }).catch((error) => {
           console.log('Error getting location', error);
         });
         
         let watch = this.geolocation.watchPosition();
         watch.subscribe((data:any) => {
-          // console.log(data)
+          console.log(data)
+          this.heading = data.heading;
           this.coordinates.latitude = data.coords.latitude;
           this.coordinates.longitude = data.coords.longitude;
+          if(data.heading) this.map.easeTo({bearing:data.heading});
           localStorage.setItem('coordinates',JSON.stringify(this.coordinates));
         });
       }
@@ -203,7 +207,7 @@ export class MapService {
           tripDuration = Math.floor(data.duration / 60);
           return { tripDuration, tripDirections };
         }
-
+        
         async presentToast() {
           const toast = await this.toastController.create({
             message: 'Maybe the location is too far to reach with your vehicle. Please consider another destination',

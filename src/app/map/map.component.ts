@@ -48,7 +48,7 @@ export class MapComponent implements OnInit {
         document.getElementById('geocoder').appendChild(geocoder.onAdd(this.mapService.map));
         
         geocoder.on('result', (res)=> {
-          console.log(res);
+          // console.log(res);
           Keyboard.hide();
           this.mapService.map.resize();
           const coordinates = this.mapService.coordinates.longitude+'%2C'+this.mapService.coordinates.latitude+'%3B'+res.result.center[0]+'%2C'+res.result.center[1];
@@ -60,23 +60,7 @@ export class MapComponent implements OnInit {
         this.mapService.map.addLayer(isoLayerOptions,'poi-label');
       });
     }
-    
-    // async presentPopover(data: any) {
-    //   const popover = await this.popoverController.create({
-    //     component: PopoverComponent,
-    //     cssClass: 'marker-popover',
-    //     componentProps: {data, onClick: () => popover.dismiss()},
-    //     translucent: true,
-    //     showBackdrop: false
-    //   });
-    //   await popover.present();
-      
-    //   await popover.onDidDismiss().then(()=>{
-    //     const coordinates = this.mapService.coordinates.longitude+','+this.mapService.coordinates.latitude+';'+data.result.center[0]+','+data.result.center[1];
-    //     const radius = [25,25];
-    //     this.mapService.getMatch(coordinates, radius);
-    //   });
-    // }
+  
     
   }
   
