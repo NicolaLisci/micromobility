@@ -16,7 +16,6 @@ export class PubnubService {
     pubnub: PubNubAngular,
     private mapService: MapService
     ) {
-      
       this.pubnub = pubnub;
     }
     
@@ -41,48 +40,52 @@ export class PubnubService {
           }
         },
         message: (data) => {
-          // console.log(data.message);
-         
-          if(data.message.user != JSON.parse(localStorage.getItem('user')).uid){
-            (this.mapService.map.getSource('drone') as GeoJSONSource).setData(
+          this.addAnotherUserOnTheMap(data);
+        }
+      });
+      
+      this.pubnub.subscribe({
+        channels: [this.channel],
+        triggerEvents: ['message']
+      });
+    }
+    
+    
+    liveTrackUser(userId: string, coordinates: any){
+      setInterval(() => {
+        let hw = {
+          user: userId,
+          coords: coordinates
+        }
+        this.pubnub.publish({
+          channel: this.channel, message: hw
+        });
+      }, 4000);
+    }
+    
+    
+    addAnotherUserOnTheMap(data: any){
+      if(data.message.user != JSON.parse(localStorage.getItem('user')).uid){
+        console.log('Another Device:', data.message);
+        (this.mapService.map.getSource('drone') as GeoJSONSource).setData(
+          {
+            "type": "FeatureCollection",
+            "features": [
               {
-                "type": "FeatureCollection",
-                "features": [
-                  {
-                    "type": "Feature",
-                    "properties": {},
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [
-                        data.message.coords.longitude,
-                        data.message.coords.latitude
-                      ]
-                    }
-                  }
-                ]
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [
+                    data.message.coords.longitude,
+                    data.message.coords.latitude
+                  ]
+                }
               }
-              );
-            }
+            ]
           }
-        });
-        
-        this.pubnub.subscribe({
-          channels: [this.channel],
-          triggerEvents: ['message']
-        });
-      }
-      
-      
-      liveTrackUser(userId: string, coordinates: any){
-        setInterval(() => {
-          let hw = {
-            user: userId,
-            coords: coordinates
-          }
-          this.pubnub.publish({
-            channel: this.channel, message: hw
-          });
-        }, 4000);
+          );
+        }
       }
     }
     

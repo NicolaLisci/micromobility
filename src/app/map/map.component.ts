@@ -9,6 +9,7 @@ import { GeocoderService } from '../services/geocoder.service';
 import { MapService } from '../services/map.service';
 import { PubnubService } from '../services/pubnub.service';
 import { Keyboard } from '@capacitor/keyboard';
+import { GeoJSONSource } from 'mapbox-gl';
 
 @Component({
   selector: 'app-map',
@@ -25,8 +26,7 @@ export class MapComponent implements OnInit {
     ) { }
     
     ngOnInit() {
-      this.pubNubService.initPubnub();
-      this.pubNubService.liveTrackUser(this.mapService.userId, this.mapService.coordinates);
+
       this.mapService.initMap();
       
       this.mapService.addUserLocation();
@@ -39,10 +39,14 @@ export class MapComponent implements OnInit {
     onMapLoaded(){
       this.mapService.map.on('load', ()=>{
         this.mapService.map.resize();
-        
+
         this.mapService.map.addSource('iso',defaultSourceOptions);
         this.mapService.map.addSource('drone', defaultSourceOptions);        
         this.mapService.map.addLayer(droneLayerOptions);
+
+        console.log(this.mapService.map.getSource('drone') as GeoJSONSource);
+        this.pubNubService.initPubnub();
+        this.pubNubService.liveTrackUser(this.mapService.userId, this.mapService.coordinates);
         
         const geocoder = this.geocoderService.initGeocoder(this.mapService.coordinates);
         document.getElementById('geocoder').appendChild(geocoder.onAdd(this.mapService.map));
