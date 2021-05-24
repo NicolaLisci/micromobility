@@ -70,7 +70,7 @@ export class PubnubService {
       const message = data.message;
       // console.log(this.mapService.map.getSource('user_'+data.user))
       if(data.message.user != JSON.parse(localStorage.getItem('user')).uid){
-        if(!this.mapService.map.getSource('user_'+message.user)){
+        if(this.mapService.map.getSource('user_'+message.user) == undefined){
           this.mapService.map.addSource('user_'+message.user, defaultSourceOptions);        
           this.mapService.map.addLayer(
             {
