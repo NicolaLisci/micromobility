@@ -41,10 +41,10 @@ export class MapComponent implements OnInit {
         this.mapService.map.resize();
 
         this.mapService.map.addSource('iso',defaultSourceOptions);
-        this.mapService.map.addSource('drone', defaultSourceOptions);        
-        this.mapService.map.addLayer(droneLayerOptions);
+        // this.mapService.map.addSource('drone', defaultSourceOptions);        
+        // this.mapService.map.addLayer(droneLayerOptions);
 
-        console.log(this.mapService.map.getSource('drone') as GeoJSONSource);
+        // console.log(this.mapService.map.getSource('drone') as GeoJSONSource);
         this.pubNubService.initPubnub();
         this.pubNubService.liveTrackUser(this.mapService.userId, this.mapService.coordinates);
         

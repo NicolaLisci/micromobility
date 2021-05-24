@@ -17,13 +17,20 @@ export class MapService {
   public map: mapboxgl.Map;
   public draw: any;
   public userId;
-  private style = 'mapbox://styles/mapbox/dark-v10';
+  private style = 'mapbox://styles/mapbox/light-v10';
   public coords;
   public heading;
-  
+
+  // ROME
+  // coordinates= {
+  //   latitude: 41.8874314503,
+  //   longitude: 12.4886930452
+  // };
+
+  //GONNOS
   coordinates= {
-    latitude: 41.8874314503,
-    longitude: 12.4886930452
+    latitude: 39.494381,
+    longitude:  8.671217
   };
   
   public locationInformation = new BehaviorSubject<any>(false);

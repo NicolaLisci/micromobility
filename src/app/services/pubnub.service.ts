@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { GeoJSONSource } from 'mapbox-gl';
 import { PubNubAngular } from 'pubnub-angular2';
+import { defaultSourceOptions } from '../models/defaultSourceOptions.model';
+import { droneLayerOptions } from '../models/pointerLayerOptions.model';
 import { MapService } from './map.service';
 
 @Injectable({
@@ -66,8 +68,26 @@ export class PubnubService {
     
     addAnotherUserOnTheMap(data: any){
       if(data.message.user != JSON.parse(localStorage.getItem('user')).uid){
+        if(!this.mapService.map.getSource('User:'+data.user)){
+          this.mapService.map.addSource('User:'+data.user, defaultSourceOptions);        
+          this.mapService.map.addLayer(
+            {
+              'id': 'User:'+data.user,
+              'type': 'symbol',
+              'source': 'User:'+data.user,
+              'layout': {
+                'icon-image': 'rocket-15'
+              },
+              "paint": {
+                "icon-color": "#FF0000"
+              }
+            }
+          );
+        }
+        
+        
         console.log('Another Device:', data.message);
-        (this.mapService.map.getSource('drone') as GeoJSONSource).setData(
+        (this.mapService.map.getSource('User:'+data.user) as GeoJSONSource).setData(
           {
             "type": "FeatureCollection",
             "features": [
