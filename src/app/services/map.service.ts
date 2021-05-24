@@ -114,7 +114,7 @@ export class MapService {
         
         let watch = this.geolocation.watchPosition();
         watch.subscribe((data:any) => {
-          console.log(data)
+          // console.log(data)
           this.heading = data.heading;
           this.coordinates.latitude = data.coords.latitude;
           this.coordinates.longitude = data.coords.longitude;

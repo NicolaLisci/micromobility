@@ -67,14 +67,16 @@ export class PubnubService {
     
     
     addAnotherUserOnTheMap(data: any){
+      const message = data.message;
+      // console.log(this.mapService.map.getSource('user_'+data.user))
       if(data.message.user != JSON.parse(localStorage.getItem('user')).uid){
-        if(!this.mapService.map.getSource('User:'+data.user)){
-          this.mapService.map.addSource('User:'+data.user, defaultSourceOptions);        
+        if(!this.mapService.map.getSource('user_'+message.user)){
+          this.mapService.map.addSource('user_'+message.user, defaultSourceOptions);        
           this.mapService.map.addLayer(
             {
-              'id': 'User:'+data.user,
+              'id': 'user_'+message.user,
               'type': 'symbol',
-              'source': 'User:'+data.user,
+              'source': 'User:'+message.user,
               'layout': {
                 'icon-image': 'rocket-15'
               },
@@ -83,11 +85,12 @@ export class PubnubService {
               }
             }
           );
+
         }
         
         
         console.log('Another Device:', data.message);
-        (this.mapService.map.getSource('User:'+data.user) as GeoJSONSource).setData(
+        (this.mapService.map.getSource('user_'+message.user) as GeoJSONSource).setData(
           {
             "type": "FeatureCollection",
             "features": [
@@ -97,8 +100,8 @@ export class PubnubService {
                 "geometry": {
                   "type": "Point",
                   "coordinates": [
-                    data.message.coords.longitude,
-                    data.message.coords.latitude
+                    message.coords.longitude,
+                    message.coords.latitude
                   ]
                 }
               }
