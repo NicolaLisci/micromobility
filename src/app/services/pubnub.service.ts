@@ -71,12 +71,13 @@ export class PubnubService {
       // console.log(this.mapService.map.getSource('user_'+data.user))
       if(data.message.user != JSON.parse(localStorage.getItem('user')).uid){
         if(this.mapService.map.getSource('user_'+message.user) == undefined){
-          this.mapService.map.addSource('user_'+message.user, defaultSourceOptions);        
+          this.mapService.map.addSource('user_'+message.user, defaultSourceOptions);
+          console.log(this.mapService.map.getSource('user_'+message.user))
           this.mapService.map.addLayer(
             {
               'id': 'user_'+message.user,
               'type': 'symbol',
-              'source': 'User:'+message.user,
+              'source': 'user_'+message.user,
               'layout': {
                 'icon-image': 'rocket-15'
               },
