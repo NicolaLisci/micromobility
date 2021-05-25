@@ -8,6 +8,8 @@ import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { mapboxDrawOptions } from '../models/mapboxDraw.model';
 import { ApiService } from './api.service';
+import { AuthService } from './auth.service';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +46,8 @@ export class MapService {
   constructor(
     private geolocation: Geolocation,
     private apiService: ApiService,
+    private userService : UserService,
+    private authService : AuthService,
     public toastController: ToastController
     ) {
       this.userId = JSON.parse(localStorage.getItem('user'))?.uid;
@@ -257,7 +261,9 @@ export class MapService {
         
         updateUserDistance(coordinates: Partial<GeolocationCoordinates>){
           const lastCoords = JSON.parse(localStorage.getItem('lastCoords'));
-         this.totDistance = +this.getDistanceinKmByCoords(lastCoords, coordinates);
-         localStorage.setItem('lastCoords',JSON.stringify(coordinates));
+          this.totDistance = +this.getDistanceinKmByCoords(lastCoords, coordinates);
+          localStorage.setItem('lastCoords',JSON.stringify(coordinates));
+          this.authService.userLoggedIn.distance = this.totDistance;
+          this.userService.update(this.userId, this.authService.userLoggedIn).then();
         }
       }

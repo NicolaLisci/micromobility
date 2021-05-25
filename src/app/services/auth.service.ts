@@ -21,13 +21,12 @@ import { UserService } from './user.service';
 })
 export class AuthService {
   userState: any;
+  public userLoggedIn : User;
   
   constructor(
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
     private userService : UserService,
-    private router: Router,
-    private ngZone: NgZone
     ) {
       this.afAuth.authState.subscribe(user => {
         if (user) {
@@ -63,16 +62,16 @@ export class AuthService {
       return this.afAuth.signInWithPopup(provider)
       .then((result) => {
         this.userService.getAll().subscribe((users: [])=>{
-          const found = users.find((user: User)=> user.email == result.user.email);
-             localStorage.setItem('user', JSON.stringify(found));
-          if(!found){
-            const user = new User();
-            user.id = result.user.uid;
-            user.displayName = result.user.displayName;
-            user.email = result.user.email;
-            user.photoUrl = result.user.photoURL;
-            user.distance = 0;
-            this.userService.create(user);
+          this.userLoggedIn = users.find((user: User)=> user.email == result.user.email);
+             localStorage.setItem('user', JSON.stringify(this.userLoggedIn));
+          if(!this.userLoggedIn){
+            this.userLoggedIn = new User();
+            this.userLoggedIn.id = result.user.uid;
+            this.userLoggedIn.displayName = result.user.displayName;
+            this.userLoggedIn.email = result.user.email;
+            this.userLoggedIn.photoUrl = result.user.photoURL;
+            this.userLoggedIn.distance = 0;
+            this.userService.create(this.userLoggedIn);
           }
         });
       }).catch((error) => {
