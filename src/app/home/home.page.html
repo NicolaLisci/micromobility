@@ -1,13 +1,18 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      <div class="flex justify-between items-center">
-          <span>{{user.distance}} Km</span>  
-          <span>{{user.id}}</span>    
-        <img src="{{user.photoUrl}}" width="40">
+    <div class="flex justify-between items-center">
+      <div class="flex flex-col">
+        <span>{{user.distance}} Km</span>  
+        <span>{{user.id}}</span>
       </div>
-  </ion-title>        
-</ion-toolbar>
+      <div class="flex items-center">
+        <img src="{{user.photoUrl}}" width="40">
+        <ion-button color="light" (click)="onLogout()">
+          <ion-icon name="exit-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>  
+  </ion-toolbar>
 </ion-header>
 
 

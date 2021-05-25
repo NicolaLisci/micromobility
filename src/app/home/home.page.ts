@@ -3,6 +3,7 @@ import { AlertController } from '@ionic/angular';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
+import { AuthService } from '../services/auth.service';
 import { MapService } from '../services/map.service';
 import { UserService } from '../services/user.service';
 
@@ -28,7 +29,7 @@ export class HomePage implements OnInit{
   constructor(
     private mapService: MapService,
     private alertController: AlertController,
-    private userService : UserService
+    private authService : AuthService
     ) {
     }
     
@@ -40,6 +41,11 @@ export class HomePage implements OnInit{
       // this.mapService.instructions.asObservable().subscribe((res)=>{
       //   this.instructions = res;
       // });
+    }
+
+    onLogout(){
+      this.authService.SignOut();
+      window.location.reload();
     }
     
     async getIsochrone() {
