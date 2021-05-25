@@ -2,7 +2,7 @@
   <ion-toolbar>
     <div class="flex justify-between items-center">
       <div class="flex flex-col">
-        <span>{{totDistance$ | async }} Km</span>  
+        <span>{{totDistance$ | async |  number : '1.2-2'}} Km</span>  
         <span>{{user.id}}</span>
       </div>
       <div class="flex items-center">

@@ -265,7 +265,10 @@ export class MapService {
           const totDistance = this.getDistanceinKmByCoords(lastCoords, coordinates) + user.distance;
           localStorage.setItem('lastCoords',JSON.stringify(coordinates));
           user.distance = totDistance;
-          console.log(totDistance);
+          // console.log(totDistance);
+          // console.log(user.key);
+          // console.log(user);
+          localStorage.setItem('user',JSON.stringify(user));
           this.userService.update(user.key, user).then(()=>{});
           this.totDistance$.next(totDistance);
           console.log('distance updated');

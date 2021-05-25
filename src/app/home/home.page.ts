@@ -37,7 +37,6 @@ export class HomePage implements OnInit{
     ngOnInit(): void {
       this.coords = this.mapService.coords;
       this.user = JSON.parse(localStorage.getItem('user'));
-      console.log(this.user);
       this.totDistance$ = this.mapService.totDistance$.asObservable();
       this.locationInformation = this.mapService.locationInformation.asObservable();
     }
