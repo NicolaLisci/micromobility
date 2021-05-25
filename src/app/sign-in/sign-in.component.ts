@@ -13,7 +13,6 @@ export class SignInComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log('signin')
   }
 
   onSignIn(){
