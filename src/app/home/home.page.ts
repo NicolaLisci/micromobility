@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { Observable } from 'rxjs';
@@ -20,7 +20,7 @@ export class HomePage implements OnInit{
   public coords;
   public user : User;
   public userId;
-  public totDistance;
+  public totDistance$= new Observable<number>();
   public showCard = true
   
   public locationInformation = new Observable<any>();
@@ -33,16 +33,15 @@ export class HomePage implements OnInit{
     ) {
     }
     
+    
     ngOnInit(): void {
       this.coords = this.mapService.coords;
       this.user = JSON.parse(localStorage.getItem('user'));
       console.log(this.user);
+      this.totDistance$ = this.mapService.totDistance$.asObservable();
       this.locationInformation = this.mapService.locationInformation.asObservable();
-      // this.mapService.instructions.asObservable().subscribe((res)=>{
-      //   this.instructions = res;
-      // });
     }
-
+    
     onLogout(){
       this.authService.SignOut();
       window.location.reload();
@@ -78,7 +77,7 @@ export class HomePage implements OnInit{
       
       await alert.present();
     }
-  
-  
+    
+    
   }
   

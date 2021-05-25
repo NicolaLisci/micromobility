@@ -7,6 +7,7 @@ import { GeoJSONSource } from 'mapbox-gl';
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { mapboxDrawOptions } from '../models/mapboxDraw.model';
+import { User } from '../models/user.model';
 import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
 import { UserService } from './user.service';
@@ -24,7 +25,7 @@ export class MapService {
   public heading;
   
   public initialCoordinates;
-  public totDistance;
+  public totDistance$ = new Subject<number>();
   
   // ROME
   // coordinates= {
@@ -47,10 +48,10 @@ export class MapService {
     private geolocation: Geolocation,
     private apiService: ApiService,
     private userService : UserService,
-    private authService : AuthService,
     public toastController: ToastController
     ) {
       this.userId = JSON.parse(localStorage.getItem('user'))?.uid;
+      this.totDistance$.next(JSON.parse(localStorage.getItem('user'))?.distance);
     }
     
     initMap(){
@@ -114,8 +115,7 @@ export class MapService {
       
       getUserLocation(){
         this.geolocation.getCurrentPosition().then((resp) => {
-          localStorage.setItem('lastCoords',JSON.stringify(resp.coords));
-          
+          localStorage.setItem('lastCoords', JSON.stringify({latitude: resp.coords.latitude, longitude:resp.coords.longitude}));
           this.coordinates.latitude = resp.coords.latitude;
           this.coordinates.longitude = resp.coords.longitude;
           // this.bearing = resp.bearing;
@@ -125,7 +125,7 @@ export class MapService {
         
         let watch = this.geolocation.watchPosition();
         watch.subscribe((data:any) => {
-          console.log(data)
+          // console.log(data)
           this.heading = data.heading;
           this.coordinates.latitude = data.coords.latitude;
           this.coordinates.longitude = data.coords.longitude;
@@ -260,10 +260,15 @@ export class MapService {
         }
         
         updateUserDistance(coordinates: Partial<GeolocationCoordinates>){
+          const user : User = JSON.parse(localStorage.getItem('user'));
           const lastCoords = JSON.parse(localStorage.getItem('lastCoords'));
-          this.totDistance = +this.getDistanceinKmByCoords(lastCoords, coordinates);
+          const totDistance = this.getDistanceinKmByCoords(lastCoords, coordinates) + user.distance;
           localStorage.setItem('lastCoords',JSON.stringify(coordinates));
-          this.authService.userLoggedIn.distance = this.totDistance;
-          this.userService.update(this.userId, this.authService.userLoggedIn).then();
+          user.distance = totDistance;
+          console.log(totDistance);
+          this.userService.update(user.key, user).then(()=>{});
+          this.totDistance$.next(totDistance);
+          console.log('distance updated');
+
         }
       }
