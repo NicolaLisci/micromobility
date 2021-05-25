@@ -1,9 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      {{userId}}
-    </ion-title>        
-  </ion-toolbar>
+      <div class="flex justify-between items-center">
+          <span>{{user.distance}} Km</span>  
+          <span>{{user.id}}</span>    
+        <img src="{{user.photoUrl}}" width="40">
+      </div>
+  </ion-title>        
+</ion-toolbar>
 </ion-header>
 
 
@@ -11,7 +15,7 @@
   <app-geocoder></app-geocoder>
   
   <div id="directions" class="card" *ngIf="locationInformation | async as locationInformation">
-
+    
     <div>
       <app-direction [data]="locationInformation" ></app-direction>
     </div>

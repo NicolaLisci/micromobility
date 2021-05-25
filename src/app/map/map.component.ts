@@ -26,7 +26,7 @@ export class MapComponent implements OnInit {
     ) { }
     
     ngOnInit() {
-
+      
       this.mapService.initMap();
       
       this.mapService.addUserLocation();
@@ -39,11 +39,11 @@ export class MapComponent implements OnInit {
     onMapLoaded(){
       this.mapService.map.on('load', ()=>{
         this.mapService.map.resize();
-
+        
         this.mapService.map.addSource('iso',defaultSourceOptions);
         // this.mapService.map.addSource('drone', defaultSourceOptions);        
         // this.mapService.map.addLayer(droneLayerOptions);
-
+        
         // console.log(this.mapService.map.getSource('drone') as GeoJSONSource);
         this.pubNubService.initPubnub();
         this.pubNubService.liveTrackUser(this.mapService.userId, this.mapService.coordinates);
@@ -64,7 +64,7 @@ export class MapComponent implements OnInit {
         this.mapService.map.addLayer(isoLayerOptions,'poi-label');
       });
     }
-  
+    
     
   }
   

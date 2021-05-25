@@ -1,19 +1,17 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from "@angular/fire/auth";
+import { AngularFireDatabase } from '@angular/fire/database';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
-import { WebBluetoothModule } from '@manekinekko/angular-web-bluetooth';
-import { PubNubAngular } from 'pubnub-angular2';
-import { AngularFireModule } from '@angular/fire';
-import { config } from 'process';
-import { AngularFireAuthModule } from "@angular/fire/auth";
-import { environment } from 'src/environments/environment';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { PubNubAngular } from 'pubnub-angular2';
+import { environment } from 'src/environments/environment';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 import { MapService } from './services/map.service';
-import { DirectionModule } from './direction/direction.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,6 +25,7 @@ import { DirectionModule } from './direction/direction.module';
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
+    // AngularFireDatabase,
     // WebBluetoothModule.forRoot({
     //   enableTracing: true // or false, this will enable logs in the browser's console
     // })

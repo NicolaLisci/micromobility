@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Coordinates, Geolocation } from '@ionic-native/geolocation/ngx';
 import { ToastController } from '@ionic/angular';
 import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
 import * as mapboxgl from 'mapbox-gl';
@@ -20,18 +20,23 @@ export class MapService {
   private style = 'mapbox://styles/mapbox/light-v10';
   public coords;
   public heading;
-
+  
+  public initialCoordinates;
+  public totDistance;
+  
   // ROME
   // coordinates= {
   //   latitude: 41.8874314503,
   //   longitude: 12.4886930452
   // };
-
+  
   //GONNOS
   coordinates= {
     latitude: 39.494381,
     longitude:  8.671217
   };
+  
+  
   
   public locationInformation = new BehaviorSubject<any>(false);
   
@@ -71,26 +76,26 @@ export class MapService {
       } );      
     }  
     
-    addDeviceInMap(){
-      this.geolocation.getCurrentPosition().then((resp) => {
-        this.coordinates.latitude = resp.coords.latitude;
-        this.coordinates.longitude = resp.coords.longitude
-      }).catch((error) => {
-        console.log('Error getting location', error);
-      });
-      
-      let watch = this.geolocation.watchPosition();
-      watch.subscribe((data:any) => {
-        this.coordinates.latitude = data.coords.latitude;
-        this.coordinates.longitude = data.coords.longitude;
-        
-        let el = document.createElement('div');
-        el.className = 'bluetooth';
-        new mapboxgl.Marker(el)
-        .setLngLat([this.coordinates.longitude, this.coordinates.latitude])
-        .addTo(this.map);
-      });
-    }
+    // addDeviceInMap(){
+    //   this.geolocation.getCurrentPosition().then((resp) => {
+    //     this.coordinates.latitude = resp.coords.latitude;
+    //     this.coordinates.longitude = resp.coords.longitude
+    //   }).catch((error) => {
+    //     console.log('Error getting location', error);
+    //   });
+    
+    //   let watch = this.geolocation.watchPosition();
+    //   watch.subscribe((data:any) => {
+    //     this.coordinates.latitude = data.coords.latitude;
+    //     this.coordinates.longitude = data.coords.longitude;
+    
+    //     let el = document.createElement('div');
+    //     el.className = 'bluetooth';
+    //     new mapboxgl.Marker(el)
+    //     .setLngLat([this.coordinates.longitude, this.coordinates.latitude])
+    //     .addTo(this.map);
+    //   });
+    // }
     
     addUserLocation(){
       this.map.addControl(
@@ -105,6 +110,8 @@ export class MapService {
       
       getUserLocation(){
         this.geolocation.getCurrentPosition().then((resp) => {
+          localStorage.setItem('lastCoords',JSON.stringify(resp.coords));
+          
           this.coordinates.latitude = resp.coords.latitude;
           this.coordinates.longitude = resp.coords.longitude;
           // this.bearing = resp.bearing;
@@ -114,11 +121,12 @@ export class MapService {
         
         let watch = this.geolocation.watchPosition();
         watch.subscribe((data:any) => {
-          // console.log(data)
+          console.log(data)
           this.heading = data.heading;
           this.coordinates.latitude = data.coords.latitude;
           this.coordinates.longitude = data.coords.longitude;
           if(data.heading) this.map.easeTo({bearing:data.heading});
+          this.updateUserDistance(this.coordinates);
           localStorage.setItem('coordinates',JSON.stringify(this.coordinates));
         });
       }
@@ -223,4 +231,33 @@ export class MapService {
           toast.present();
         }
         
+        
+        getDistanceinKmByCoords(startCoords : Partial<GeolocationCoordinates>, endCoords : Partial<GeolocationCoordinates>, unit?) {
+          if ((startCoords.latitude == endCoords.latitude) && (startCoords.longitude == endCoords.longitude)) {
+            return 0;
+          }
+          else {
+            var radlat1 = Math.PI * startCoords.latitude/180;
+            var radlat2 = Math.PI * endCoords.latitude/180;
+            var theta = startCoords.longitude-endCoords.longitude;
+            var radtheta = Math.PI * theta/180;
+            var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+            if (dist > 1) {
+              dist = 1;
+            }
+            dist = Math.acos(dist);
+            dist = dist * 180/Math.PI;
+            dist = dist * 60 * 1.1515;
+            dist = dist * 1.609344;
+            if (unit=="M") { dist = dist * 60 * 1.1515}
+            if (unit=="N") { dist = dist * 0.8684 }
+            return dist;
+          }
+        }
+        
+        updateUserDistance(coordinates: Partial<GeolocationCoordinates>){
+          const lastCoords = JSON.parse(localStorage.getItem('lastCoords'));
+         this.totDistance = +this.getDistanceinKmByCoords(lastCoords, coordinates);
+         localStorage.setItem('lastCoords',JSON.stringify(coordinates));
+        }
       }

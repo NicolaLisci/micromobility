@@ -6,6 +6,7 @@ export const environment = {
   firebase:{
     apiKey: "AIzaSyDG9ZIeLTVwmDEggPvx2aPQXZXz_h27oK0",
     authDomain: "micromobilityx-01.firebaseapp.com",
+    databaseURL: "https://micromobilityx-01-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "micromobilityx-01",
     storageBucket: "micromobilityx-01.appspot.com",
     messagingSenderId: "638583698944",
