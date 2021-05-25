@@ -12,6 +12,7 @@ import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MapService } from './services/map.service';
+import { SignInModule } from './sign-in/sign-in.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,6 +26,7 @@ import { MapService } from './services/map.service';
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
+    SignInModule,
     // AngularFireDatabase,
     // WebBluetoothModule.forRoot({
     //   enableTracing: true // or false, this will enable logs in the browser's console
